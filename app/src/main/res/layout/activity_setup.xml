@@ -9,28 +9,38 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="com.gmail.jaaska.jaakko.calendarcountdown.SetupActivity">
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textSize="@dimen/text_large"
-        android:text="Setup Countdown"
-        android:layout_marginBottom="@dimen/activity_vertical_margin"
-        android:id="@+id/textViewSetupTitle"/>
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="End Date"
         android:textStyle="bold"
-        android:id="@+id/textViewEndDateTitle"
-        android:layout_below="@id/textViewSetupTitle"/>
+        android:id="@+id/textViewEndDateTitle" />
 
-
-    <CalendarView
-        android:layout_width="wrap_content"
+    <RelativeLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/textViewEndDateTitle"
-        android:id="@+id/calendarViewEndDate"></CalendarView>
+        android:layout_margin="0dp"
+        android:padding="0dp"
+        android:id="@+id/relativeLayoutEndDate"
+        android:layout_below="@id/textViewEndDateTitle" >
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_calendar_dark"
+            android:id="@+id/imageViewCalendar"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/textViewSetEndDate"
+            android:text="24.12.1969"
+            android:textColor="@color/colorBlack"
+            android:layout_toRightOf="@id/imageViewCalendar"
+            android:layout_centerVertical="true"/>
+
+    </RelativeLayout>
 
     <CheckBox
         android:layout_width="wrap_content"
@@ -38,7 +48,30 @@
         android:checked="false"
         android:text="Exclude Weekends"
         android:id="@+id/checkBoxExcludeWeekends"
-        android:layout_below="@id/calendarViewEndDate"/>
+        android:layout_below="@id/relativeLayoutEndDate"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Excluded Days"
+        android:id="@+id/textViewExcludedDaysTitle"
+        android:textStyle="bold"
+        android:layout_below="@id/checkBoxExcludeWeekends"/>
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/buttonAddExcludeRange"
+        android:layout_below="@id/textViewExcludedDaysTitle"
+        android:text="Add"/>
+
+    <android.support.v7.widget.RecyclerView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/buttonAddExcludeRange"
+        android:layout_alignParentBottom="true"
+        android:id="@+id/recyclerViewExcludedDays"></android.support.v7.widget.RecyclerView>
+
 
 
 </RelativeLayout>

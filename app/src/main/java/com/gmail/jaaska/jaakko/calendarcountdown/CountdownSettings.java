@@ -6,7 +6,6 @@ import android.util.Log;
 import java.io.Serializable;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.GregorianCalendar;
 
 /**
  * Created by jaakko on 2.5.2016.
@@ -177,5 +176,13 @@ public class CountdownSettings implements Serializable{
         Log.d(TAG, "weekEndDaysInTimeFrame() - remainderDays: "+Integer.toString(remainderDays));
 
         return weekEndDays;
+    }
+
+    public static class ExcludedDays {
+        private long fromDate;
+        private long toDate;
+        private int daysCount;
+
+
     }
 }

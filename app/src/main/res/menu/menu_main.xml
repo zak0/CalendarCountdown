@@ -7,7 +7,7 @@
 
     <item
         android:id="@+id/menuitem_main_setup"
-        android:icon="@android:drawable/ic_menu_preferences"
+        android:icon="@drawable/ic_settings"
         android:title="Setup"
         android:orderInCategory="100"
         app:showAsAction="always"/>

@@ -29,13 +29,4 @@
         android:layout_below="@id/textViewEndDate"
         android:layout_centerHorizontal="true" />
 
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Setup"
-        android:id="@+id/buttonSetup"
-        android:layout_centerHorizontal="true"
-        android:layout_alignParentBottom="true"/>
-
-
 </RelativeLayout>

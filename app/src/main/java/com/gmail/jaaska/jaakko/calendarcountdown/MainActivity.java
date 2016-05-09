@@ -5,6 +5,7 @@ import android.content.SharedPreferences;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CalendarView;
@@ -34,6 +35,7 @@ public class MainActivity extends AppCompatActivity {
         textViewEndDate = (TextView) findViewById(R.id.textViewEndDate);
         textViewDaysLeft = (TextView) findViewById(R.id.textViewDaysLeft);
 
+        /*
         Button buttonSetup = (Button) findViewById(R.id.buttonSetup);
         buttonSetup.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -43,7 +45,7 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(setupIntent);
             }
         });
-
+*/
 
     }
 
@@ -57,6 +59,27 @@ public class MainActivity extends AppCompatActivity {
         getMenuInflater().inflate(R.menu.menu_main, menu);
 
         return true;
+    }
+
+    /**
+     * This handles action bar item clicks.
+     * @param item
+     * @return
+     */
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+
+        switch(id) {
+            case R.id.menuitem_main_setup:
+                Intent setupIntent = new Intent(MainActivity.this, SetupActivity.class);
+                setupIntent.putExtra(CountdownSettings.extraName, settings);
+                startActivity(setupIntent);
+                break;
+        }
+
+
+        return super.onOptionsItemSelected(item);
     }
 
     @Override

@@ -1,13 +1,19 @@
 package com.gmail.jaaska.jaakko.calendarcountdown;
 
+import android.app.DatePickerDialog;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.CalendarView;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
+import android.widget.DatePicker;
+import android.widget.TextView;
 
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.GregorianCalendar;
 
 public class SetupActivity extends AppCompatActivity {
@@ -16,29 +22,40 @@ public class SetupActivity extends AppCompatActivity {
     private CalendarView calendarViewEndDate;
     private CheckBox checkBoxExcludeWeekends;
     private Calendar calendar;
+    private TextView textViewSetDate;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_setup);
+
+        // Enable up (or back) action to action bar
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        //getActionBar().setDisplayHomeAsUpEnabled(true);
+
+        // Read settings from Intent
         Intent intent = getIntent();
-        //settings = new CountdownSettings().loadFromSharedPrefs(getSharedPreferences(MainActivity.PREFS_NAME, 0));
         settings = (CountdownSettings) intent.getSerializableExtra(CountdownSettings.extraName);
 
-        calendarViewEndDate = (CalendarView) findViewById(R.id.calendarViewEndDate);
+        setTitle("Setup Countdown");
+
+        //calendarViewEndDate = (CalendarView) findViewById(R.id.calendarViewEndDate);
         checkBoxExcludeWeekends = (CheckBox) findViewById(R.id.checkBoxExcludeWeekends);
+        textViewSetDate = (TextView) findViewById(R.id.textViewSetEndDate);
 
-        // TODO: Maybe read this from locale??
-        calendarViewEndDate.setFirstDayOfWeek(Calendar.MONDAY);
-
-        calendarViewEndDate.setOnDateChangeListener(new CalendarView.OnDateChangeListener() {
+        textViewSetDate.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onSelectedDayChange(CalendarView view, int year, int month, int dayOfMonth) {
-                calendar = new GregorianCalendar(year, month, dayOfMonth);
-                settings.setEndDate(calendar.getTimeInMillis());
-                settings.testHook();
+            public void onClick(View v) {
+                Calendar cal = Calendar.getInstance();
+                if(settings.endDateIsValid()) {
+                    cal.setTime(new Date(settings.getEndDate()));
+                }
+                DatePickerDialog dialog = new DatePickerDialog(SetupActivity.this, new EndDateSetListener(), cal.get(Calendar.YEAR),cal.get(Calendar.MONTH),cal.get(Calendar.DAY_OF_MONTH));
+                dialog.setTitle("Set countdown end date");
+                dialog.show();
             }
         });
+
 
         checkBoxExcludeWeekends.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
@@ -47,16 +64,17 @@ public class SetupActivity extends AppCompatActivity {
             }
         });
 
-        setExistingSettings();
+        setExistingSettingsToViews();
+
     }
 
     /**
      * Sets the Views to correspond to the existing settings
      */
-    private void setExistingSettings() {
+    private void setExistingSettingsToViews() {
         // IF first time setting up, set calendar to current date
-        long calDate = settings.endDateIsValid() ? settings.getEndDate() : System.currentTimeMillis();
-        calendarViewEndDate.setDate(calDate, true, false);
+        String dateString = new SimpleDateFormat("d.M.yyyy").format(new Date(settings.getEndDate()));
+        textViewSetDate.setText(dateString);
         checkBoxExcludeWeekends.setChecked(settings.isExcludeWeekends());
 
     }
@@ -73,5 +91,16 @@ public class SetupActivity extends AppCompatActivity {
         super.onStop();
 
         settings.saveToSharedPrefs(getSharedPreferences(MainActivity.PREFS_NAME, 0));
+    }
+
+    private class EndDateSetListener implements DatePickerDialog.OnDateSetListener {
+        @Override
+        public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
+            calendar = new GregorianCalendar(year, monthOfYear, dayOfMonth);
+            settings.setEndDate(calendar.getTimeInMillis());
+            //settings.testHook();
+
+            setExistingSettingsToViews();
+        }
     }
 }
