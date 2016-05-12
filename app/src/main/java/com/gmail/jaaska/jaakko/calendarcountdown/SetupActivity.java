@@ -4,7 +4,10 @@ import android.app.DatePickerDialog;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.View;
+import android.widget.Button;
 import android.widget.CalendarView;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
@@ -19,10 +22,10 @@ import java.util.GregorianCalendar;
 public class SetupActivity extends AppCompatActivity {
 
     private CountdownSettings settings;
-    private CalendarView calendarViewEndDate;
     private CheckBox checkBoxExcludeWeekends;
     private Calendar calendar;
     private TextView textViewSetDate;
+    private RecyclerView recyclerViewExcludedRanges;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,7 +34,6 @@ public class SetupActivity extends AppCompatActivity {
 
         // Enable up (or back) action to action bar
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        //getActionBar().setDisplayHomeAsUpEnabled(true);
 
         // Read settings from Intent
         Intent intent = getIntent();
@@ -39,9 +41,9 @@ public class SetupActivity extends AppCompatActivity {
 
         setTitle("Setup Countdown");
 
-        //calendarViewEndDate = (CalendarView) findViewById(R.id.calendarViewEndDate);
         checkBoxExcludeWeekends = (CheckBox) findViewById(R.id.checkBoxExcludeWeekends);
         textViewSetDate = (TextView) findViewById(R.id.textViewSetEndDate);
+        recyclerViewExcludedRanges = (RecyclerView) findViewById(R.id.recyclerViewExcludedDays);
 
         textViewSetDate.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -61,8 +63,22 @@ public class SetupActivity extends AppCompatActivity {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 settings.setExcludeWeekends(isChecked);
+                recyclerViewExcludedRanges.getAdapter().notifyDataSetChanged();
             }
         });
+
+        Button buttonAddExcludedDays = (Button) findViewById(R.id.buttonAddExcludeRange);
+        buttonAddExcludedDays.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                AddExcludedDaysDialog dlg = new AddExcludedDaysDialog(SetupActivity.this, settings, recyclerViewExcludedRanges);
+                dlg.show();
+            }
+        });
+
+        ExcludedDaysRecyclerViewAdapter adapter = new ExcludedDaysRecyclerViewAdapter(settings.getExcludedDays());
+        recyclerViewExcludedRanges.setAdapter(adapter);
+        recyclerViewExcludedRanges.setLayoutManager(new LinearLayoutManager(this));
 
         setExistingSettingsToViews();
 

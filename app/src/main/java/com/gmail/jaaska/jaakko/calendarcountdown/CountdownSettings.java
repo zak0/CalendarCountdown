@@ -4,15 +4,22 @@ import android.content.SharedPreferences;
 import android.util.Log;
 
 import java.io.Serializable;
+import java.lang.reflect.Array;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Set;
 
 /**
  * Created by jaakko on 2.5.2016.
  */
 public class CountdownSettings implements Serializable{
 
-    private final String TAG = "CountdownSettings";
+    private static final String TAG = "CountdownSettings";
 
     // used when passing CountdownSettings in Intents.
     public static final String extraName = "CountdownSettings";
@@ -23,9 +30,16 @@ public class CountdownSettings implements Serializable{
     private String keyEndDate = "endDate";
     private String keyExcludeWeekends = "excludeWeekends";
 
+    //TODO Storing excluded days is now really ugly. Needs to be redone when smarter storage is implemented.
+    private String keyExcludedRangesFromDates = "excludedRangesFromDates";
+    private String keyExcludedRangesToDates = "excludedRangesToDates";
+
+    private List<ExcludedDays> excludedDays;
+
     public CountdownSettings() {
         endDate = 0;
         excludeWeekends = false;
+        excludedDays = new ArrayList<>();
     }
 
     public long getEndDate() {
@@ -53,6 +67,18 @@ public class CountdownSettings implements Serializable{
         ret.setEndDate(sharedPreferences.getLong(keyEndDate, 0));
         ret.setExcludeWeekends(sharedPreferences.getBoolean(keyExcludeWeekends, false));
 
+        ArrayList<ExcludedDays> loadedExcludedDays = excludedDaysFromStringSet(sharedPreferences.getStringSet(keyExcludedRangesFromDates, new LinkedHashSet<String>()),
+                                                                                sharedPreferences.getStringSet(keyExcludedRangesToDates, new LinkedHashSet<String>()));
+
+        Log.d(TAG, "loadFromSharedPrefs() - loadedExcludedDays.size() = "+Integer.toString(loadedExcludedDays.size()));
+        // Set correct ref to CountdownSettings for loadedExcludedDays
+        for(int i = 0; i < loadedExcludedDays.size(); i++) {
+            loadedExcludedDays.get(i).setSettings(ret);
+        }
+
+        ret.setExcludedDays(loadedExcludedDays);
+
+
         return ret;
     }
 
@@ -62,9 +88,75 @@ public class CountdownSettings implements Serializable{
 
         editor.putLong(keyEndDate, endDate);
         editor.putBoolean(keyExcludeWeekends, excludeWeekends);
+        editor.putStringSet(keyExcludedRangesFromDates, excludedDaysToStringSet(0));
+        editor.putStringSet(keyExcludedRangesToDates, excludedDaysToStringSet(1));
 
         editor.commit();
     }
+
+    /**
+     * Ugly way to store excluded days into SharedPrefs as it
+     * supports Set<String>s and not ArrayList<>s directly.
+     *
+     * TODO: This needs to be redone somehow else.
+     * @return
+     */
+    private Set<String> excludedDaysToStringSet(int toOrFrom) {
+
+        Set<String> ret = new LinkedHashSet<>();
+
+        ExcludedDays item;
+        for(int i = 0; i < excludedDays.size(); i++) {
+            item = excludedDays.get(i);
+            if(toOrFrom == 0)
+                ret.add(Long.toString(item.getFromDate()));
+            else
+                ret.add(Long.toString(item.getToDate()));
+
+        }
+
+        Log.d(TAG, "excludedFromDaysToStringSet() - converted " +Integer.toString(ret.size())+ " items");
+
+
+        return ret;
+    }
+
+
+
+    /**
+     *  Ugly way to store excluded days into SharedPrefs as it
+     * supports Set<String>s and not ArrayList<>s directly.
+     *
+     * Reverse operation to excludedDaysToStringSet()
+     *
+     * @param fromSet
+     * @param toSet
+     * @return
+     */
+    private ArrayList<ExcludedDays> excludedDaysFromStringSet(Set<String> fromSet, Set<String> toSet) {
+
+
+        ArrayList<ExcludedDays> ret = new ArrayList<>();
+
+        Iterator<String> fromIter = fromSet.iterator();
+        Iterator<String> toIter = toSet.iterator();
+
+        ExcludedDays nextToAdd;
+        while(fromIter.hasNext()) { // both iterators should have the same amount of items
+            // Reference to CountDownSettings needs to be added later to ExcludedDays created here.
+
+            nextToAdd = new ExcludedDays(null);
+            nextToAdd.setToDate(Long.parseLong(toIter.next()));
+            nextToAdd.setFromDate(Long.parseLong(fromIter.next()));
+            ret.add(nextToAdd);
+        }
+
+        Log.d(TAG, "excludedDaysFromStringSet() - recovered " +Integer.toString(ret.size())+ " items");
+
+        return ret;
+    }
+
+
 
     public boolean endDateIsValid() {
         return endDate > 0;
@@ -104,9 +196,22 @@ public class CountdownSettings implements Serializable{
         else
             ret = (int) days;
 
+        // TODO: Reduce excluded days.
+        ret -= getExcludedDaysCountInTimeFrame(getCurrentTimeWithOnlyDate(), endDate);
 
         Log.d(TAG, "getDaysToEndDate() - days: " +Integer.toString(ret));
         return ret;
+    }
+
+    private int getExcludedDaysCountInTimeFrame(long from, long to) {
+        int sum = 0;
+
+        for(int i = 0; i < excludedDays.size(); i++) {
+            sum += excludedDays.get(i).getDaysCount();
+        }
+
+        sum = sum < 0 ? 0 : sum;
+        return sum;
     }
 
     /**
@@ -120,12 +225,37 @@ public class CountdownSettings implements Serializable{
     }
 
     /**
+     * Returns number of days between startTime and endTime.
+     * @param startTime
+     * @param endTime
+     * @return
+     */
+    public static int daysInTimeFrame(long startTime, long endTime) {
+        Date startDate = new Date(startTime);
+        Calendar cal = Calendar.getInstance();
+
+        // convert start time to date only just in case
+        cal.setTime(startDate);
+        cal.set(Calendar.HOUR_OF_DAY, 0);
+        cal.set(Calendar.MINUTE, 0);
+        cal.set(Calendar.SECOND, 0);
+        cal.set(Calendar.MILLISECOND, 0);
+
+
+        // calculate full weeks within timeframe
+        long timeFrame = endTime - cal.getTimeInMillis();
+        int days = (int) (timeFrame / 1000 / 60 / 60 / 24);
+
+        return days;
+    }
+
+    /**
      * Returns number of weekend days (saturday and sunday) between startTime and endTime.
      * @param startTime
      * @param endTime
      * @return
      */
-    private int weekEndDaysInTimeFrame(long startTime, long endTime) {
+    public static int weekEndDaysInTimeFrame(long startTime, long endTime) {
         int weekEndDays = 0; // number of saturdays and sundays
 
         Date startDate = new Date(startTime);
@@ -145,7 +275,7 @@ public class CountdownSettings implements Serializable{
         int endWeekDay = cal.get(Calendar.DAY_OF_WEEK);
 
         // calculate full weeks within timeframe
-        long timeFrame = endTime - getCurrentTimeWithOnlyDate();
+        long timeFrame = endTime - startTime; // getCurrentTimeWithOnlyDate();
         int weeks = (int) (timeFrame / 1000 / 60 / 60 / 24 / 7);
         int remainderDays = (int) (timeFrame / 1000 / 60 / 60 / 24 % 7);
 
@@ -178,11 +308,18 @@ public class CountdownSettings implements Serializable{
         return weekEndDays;
     }
 
-    public static class ExcludedDays {
-        private long fromDate;
-        private long toDate;
-        private int daysCount;
 
+    public void addExcludedDays(ExcludedDays days) {
+        excludedDays.add(days);
+    }
 
+    public void setExcludedDays(List<ExcludedDays> excludedDays) {
+        this.excludedDays = excludedDays;
+    }
+
+    public List<ExcludedDays> getExcludedDays() {
+        Log.d(TAG, "getExcludedDays() - count: "+Integer.toString(excludedDays.size()));
+
+        return excludedDays;
     }
 }

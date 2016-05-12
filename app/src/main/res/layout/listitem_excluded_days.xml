@@ -20,12 +20,15 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="From 1.1.1969"
+                android:textColor="@color/colorBlack"
                 android:id="@+id/textViewExclDateFrom"/>
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:paddingLeft="10dp"
                 android:text="To 24.12.1972"
+                android:textColor="@color/colorBlack"
                 android:layout_toRightOf="@id/textViewExclDateFrom"
                 android:id="@+id/textViewExclDateTo"/>
 
@@ -33,6 +36,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:id="@+id/textViewExclDaysCount"
+                android:textColor="@color/colorBlack"
                 android:layout_below="@id/textViewExclDateFrom"/>
 
         </RelativeLayout>
