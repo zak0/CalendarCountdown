@@ -1,14 +1,15 @@
 package com.gmail.jaaska.jaakko.calendarcountdown;
 
 import android.app.DatePickerDialog;
+import android.appwidget.AppWidgetManager;
+import android.content.ComponentName;
 import android.content.Intent;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.Button;
-import android.widget.CalendarView;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.DatePicker;
@@ -100,6 +101,7 @@ public class SetupActivity extends AppCompatActivity {
         super.onPause();
 
         settings.saveToSharedPrefs(getSharedPreferences(MainActivity.PREFS_NAME, 0));
+        updateWidgets();
     }
 
     @Override
@@ -107,6 +109,19 @@ public class SetupActivity extends AppCompatActivity {
         super.onStop();
 
         settings.saveToSharedPrefs(getSharedPreferences(MainActivity.PREFS_NAME, 0));
+        updateWidgets();
+    }
+
+    /**
+     * Updates all visible widgets with possibly changed settings.
+     */
+    private void updateWidgets() {
+        Intent intent = new Intent(this, CountdownAppWidget.class);
+        intent.setAction(AppWidgetManager.ACTION_APPWIDGET_UPDATE);
+        ComponentName name = new ComponentName(this, CountdownAppWidget.class);
+        int [] ids = AppWidgetManager.getInstance(this).getAppWidgetIds(name);
+        intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS,ids);
+        sendBroadcast(intent);
     }
 
     private class EndDateSetListener implements DatePickerDialog.OnDateSetListener {
