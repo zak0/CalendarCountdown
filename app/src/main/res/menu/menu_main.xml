@@ -6,9 +6,9 @@
     >
 
     <item
-        android:id="@+id/menuitem_main_setup"
-        android:icon="@drawable/ic_settings"
-        android:title="Setup"
+        android:id="@+id/menuitem_main_sort"
+        android:icon="@drawable/ic_sort_white_24dp"
+        android:title="Sort"
         android:orderInCategory="100"
         app:showAsAction="always"/>
 

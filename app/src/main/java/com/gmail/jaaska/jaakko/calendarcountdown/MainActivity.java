@@ -2,24 +2,26 @@ package com.gmail.jaaska.jaakko.calendarcountdown;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.TextView;
+import android.view.View;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
+import java.util.ArrayList;
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
     private static final String TAG = "MainActivity";
 
-    public static final String PREFS_NAME = "CountdownPrefs";
-    private TextView textViewEndDate;
-    private TextView textViewDaysLeft;
+    private RecyclerView recyclerView;
 
     private CountdownSettings settings;
+    private List<CountdownSettings> countdowns;
 
     private DatabaseHelper db;
 
@@ -28,25 +30,25 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        //settings = new CountdownSettings().loadFromSharedPrefs(getSharedPreferences(PREFS_NAME, 0));
+        countdowns = new ArrayList<>();
 
-        textViewEndDate = (TextView) findViewById(R.id.textViewEndDate);
-        textViewDaysLeft = (TextView) findViewById(R.id.textViewDaysLeft);
 
         db = new DatabaseHelper(this, DatabaseHelper.DB_NAME, null, DatabaseHelper.DB_VERSION);
 
+        recyclerView = (RecyclerView) findViewById(R.id.recyclerViewCountdowns);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        CountdownsRecyclerViewAdapter adapter = new CountdownsRecyclerViewAdapter(countdowns);
+        recyclerView.setAdapter(adapter);
 
-        /*
-        Button buttonSetup = (Button) findViewById(R.id.buttonSetup);
-        buttonSetup.setOnClickListener(new View.OnClickListener() {
+        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.floatingActionButtonAddCountdown);
+        fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent setupIntent = new Intent(MainActivity.this, SetupActivity.class);
-                setupIntent.putExtra(CountdownSettings.extraName, settings);
+                setupIntent.putExtra(CountdownSettings.extraName, new CountdownSettings());
                 startActivity(setupIntent);
             }
         });
-*/
 
     }
 
@@ -72,10 +74,8 @@ public class MainActivity extends AppCompatActivity {
         int id = item.getItemId();
 
         switch(id) {
-            case R.id.menuitem_main_setup:
-                Intent setupIntent = new Intent(MainActivity.this, SetupActivity.class);
-                setupIntent.putExtra(CountdownSettings.extraName, settings);
-                startActivity(setupIntent);
+            case R.id.menuitem_main_sort:
+                // TODO change sorting or show dialog or something...
                 break;
         }
 
@@ -91,30 +91,17 @@ public class MainActivity extends AppCompatActivity {
 
         // Read settings from DB
         db.openDb();
-        if(db.loadSettings().size() > 0) {
-            settings = db.loadSettings().get(0);
-        }
+        countdowns = db.loadSettings();
         db.closeDb();
 
-        if(settings == null) {
-            Log.d(TAG, "onResume() - settings was null");
-            settings = new CountdownSettings();
-        }
-
-
-        //settings = new CountdownSettings().loadFromSharedPrefs(getSharedPreferences(PREFS_NAME, 0));
-
-
-        if(settings.endDateIsValid()) {
-            refreshViews();
-        }
+        refreshViews();
 
     }
 
     private void refreshViews() {
         Log.d(TAG, "refreshViews() - called");
-        String dateString = new SimpleDateFormat("d.M.yyyy").format(new Date(settings.getEndDate()));
-        textViewEndDate.setText(dateString);
-        textViewDaysLeft.setText(Integer.toString(settings.getDaysToEndDate())+ " days left");
+        CountdownsRecyclerViewAdapter adapter = new CountdownsRecyclerViewAdapter(countdowns);
+        recyclerView.swapAdapter(adapter, true);
+        //recyclerView.getAdapter().notifyDataSetChanged();
     }
 }

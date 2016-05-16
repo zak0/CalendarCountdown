@@ -40,6 +40,13 @@
             android:layout_toRightOf="@id/imageViewCalendar"
             android:layout_centerVertical="true"/>
 
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/editTextLabel"
+            android:hint="What happens at that date?"
+            android:layout_below="@id/imageViewCalendar"/>
+
     </RelativeLayout>
 
     <CheckBox

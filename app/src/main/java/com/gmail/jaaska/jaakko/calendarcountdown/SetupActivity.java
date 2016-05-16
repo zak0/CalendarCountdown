@@ -8,20 +8,23 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.DatePicker;
+import android.widget.EditText;
 import android.widget.TextView;
 
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
-import java.util.List;
 
 public class SetupActivity extends AppCompatActivity {
 
@@ -31,15 +34,20 @@ public class SetupActivity extends AppCompatActivity {
     private CheckBox checkBoxExcludeWeekends;
     private Calendar calendar;
     private TextView textViewSetDate;
+    private EditText editTextLabel;
     private RecyclerView recyclerViewExcludedRanges;
+
+    private DatabaseHelper db;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_setup);
 
-        // Enable up (or back) action to action bar
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        db = new DatabaseHelper(this, DatabaseHelper.DB_NAME, null, DatabaseHelper.DB_VERSION);
+
+        // Hide up (or back) action to action bar
+        getSupportActionBar().setDisplayHomeAsUpEnabled(false);
 
         // Read settings from Intent
         Intent intent = getIntent();
@@ -50,6 +58,7 @@ public class SetupActivity extends AppCompatActivity {
         checkBoxExcludeWeekends = (CheckBox) findViewById(R.id.checkBoxExcludeWeekends);
         textViewSetDate = (TextView) findViewById(R.id.textViewSetEndDate);
         recyclerViewExcludedRanges = (RecyclerView) findViewById(R.id.recyclerViewExcludedDays);
+        editTextLabel = (EditText) findViewById(R.id.editTextLabel);
 
         textViewSetDate.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -64,6 +73,22 @@ public class SetupActivity extends AppCompatActivity {
             }
         });
 
+        editTextLabel.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                settings.setLabel(s.toString());
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        });
 
         checkBoxExcludeWeekends.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
@@ -98,6 +123,7 @@ public class SetupActivity extends AppCompatActivity {
         String dateString = new SimpleDateFormat("d.M.yyyy").format(new Date(settings.getEndDate()));
         textViewSetDate.setText(dateString);
         checkBoxExcludeWeekends.setChecked(settings.isExcludeWeekends());
+        editTextLabel.setText(settings.getLabel());
 
     }
 
@@ -107,15 +133,13 @@ public class SetupActivity extends AppCompatActivity {
         super.onPause();
 
         // Save settings to DB
-        // As a list for future support of multiple countdowns.
-        DatabaseHelper db = new DatabaseHelper(this, DatabaseHelper.DB_NAME, null, DatabaseHelper.DB_VERSION);
-        db.openDb();
-        List<CountdownSettings> list = new ArrayList<>();
-        list.add(settings);
-        db.saveToDB(list);
-        db.closeDb();
+        if(validateInputs()) {
+            // But only if entered data is OK.
+            db.openDb();
+            db.saveCountdownToDB(settings);
+            db.closeDb();
+        }
 
-        //settings.saveToSharedPrefs(getSharedPreferences(MainActivity.PREFS_NAME, 0));
         updateWidgets();
     }
 
@@ -125,6 +149,18 @@ public class SetupActivity extends AppCompatActivity {
         super.onStop();
 
 
+    }
+
+    /**
+     * Checks data entered by the user.
+     * @return true if entered data is valid
+     */
+    private boolean validateInputs() {
+
+        if(settings.getEndDate() > 100)
+            return true;
+
+        return false;
     }
 
     /**
@@ -148,5 +184,34 @@ public class SetupActivity extends AppCompatActivity {
 
             setExistingSettingsToViews();
         }
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_setup, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+
+        switch(id) {
+            case R.id.menuitem_setup_delete:
+                db.openDb();
+                db.deleteCountdown(settings);
+                db.closeDb();
+
+                // Point settings to new CountdownSettings so that input data validation fails and it is not saved to database.
+                settings = new CountdownSettings();
+                finish();
+                break;
+            case R.id.menuitem_setup_done:
+                // Saving is done at onPause(), so we can just finish() this Activity.
+                finish();
+                break;
+        }
+
+        return super.onOptionsItemSelected(item);
     }
 }

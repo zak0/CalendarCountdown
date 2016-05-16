@@ -102,7 +102,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     /**
      * Reads and returns settings from database.
-     * @return
+     * @return List of all countdowns in the database.
      */
     public List<CountdownSettings> loadSettings() {
         ArrayList<CountdownSettings> ret = new ArrayList<>();
@@ -145,6 +145,16 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             countdown.addExcludedDays(exclDays);
             cur.moveToNext();
         }
+    }
+
+    /**
+     * Saves a given countdown into the database.
+     * @param settings CountDownSettings to save
+     */
+    public void saveCountdownToDB(CountdownSettings settings) {
+        List<CountdownSettings> list = new ArrayList<>();
+        list.add(settings);
+        saveToDB(list);
     }
 
     /**
@@ -257,5 +267,21 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         ret.setToDate(cur.getLong(3));
 
         return ret;
+    }
+
+    /**
+     * Daletes given countdown from the database.
+     * @param settings
+     */
+    public void deleteCountdown(CountdownSettings settings) {
+        // First delete excluded date ranges.
+        String sql = "delete from "+TBLEXCLUDEDDAYS+
+                " where "+COLCOUNTDOWNID+"="+Integer.toString(settings.getDbId());
+        db.execSQL(sql);
+
+        // Then delete the countdown itself.
+        sql = "delete from "+TBLCOUNTDOWN+
+                " where "+COLCOUNTDOWNID+"="+Integer.toString(settings.getDbId());
+        db.execSQL(sql);
     }
 }
