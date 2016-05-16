@@ -12,14 +12,23 @@ public class ExcludedDays implements Serializable {
     private long fromDate; // exclusion zone start
     private long toDate; // exclusion range end
 
+    private int dbId; // ID of the corresponding item in the DB
+
+    public ExcludedDays() {
+        dbId = Integer.MIN_VALUE;
+    }
+
     public ExcludedDays(CountdownSettings settings) {
         this.settings = settings;
+        dbId = Integer.MIN_VALUE;
     }
 
     public ExcludedDays(CountdownSettings settings, long fromDate, long toDate) {
         this.settings = settings;
         this.fromDate = fromDate;
         this.toDate = toDate;
+
+        dbId = Integer.MIN_VALUE;
     }
 
     public long getFromDate() {
@@ -64,5 +73,13 @@ public class ExcludedDays implements Serializable {
 
     public void setSettings(CountdownSettings settings) {
         this.settings = settings;
+    }
+
+    public int getDbId() {
+        return dbId;
+    }
+
+    public void setDbId(int dbId) {
+        this.dbId = dbId;
     }
 }

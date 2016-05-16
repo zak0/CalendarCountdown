@@ -22,22 +22,26 @@ public class CountdownSettings implements Serializable{
     // used when passing CountdownSettings in Intents.
     public static final String extraName = "CountdownSettings";
 
-    private long endDate;
-    private boolean excludeWeekends;
+    private long endDate; // "zero-date" of the countdown
+    private boolean excludeWeekends; // are weekened excluded or not
 
+    // SharedPreferences keys
     private String keyEndDate = "endDate";
     private String keyExcludeWeekends = "excludeWeekends";
-
-    //TODO Storing excluded days is now really ugly. Needs to be redone when smarter storage is implemented.
     private String keyExcludedRangesFromDates = "excludedRangesFromDates";
     private String keyExcludedRangesToDates = "excludedRangesToDates";
 
-    private List<ExcludedDays> excludedDays;
+    private List<ExcludedDays> excludedDays; // all the day ranges that are excluded from countdown
+
+    private int dbId; // ID of the corresponding item in the DB
+    private String label; // label of the countdown
 
     public CountdownSettings() {
         endDate = 0;
         excludeWeekends = false;
         excludedDays = new ArrayList<>();
+        label = "";
+        dbId = Integer.MIN_VALUE;
     }
 
     public long getEndDate() {
@@ -58,6 +62,12 @@ public class CountdownSettings implements Serializable{
         this.excludeWeekends = excludeWeekends;
     }
 
+    /**
+     * THIS WILL BE OMITTED. NOW USES AN SQLITE DB FOR STORAGE
+     *
+     * @param sharedPreferences
+     * @return
+     */
     public CountdownSettings loadFromSharedPrefs(SharedPreferences sharedPreferences) {
         Log.d(TAG, "loadFromSharedPrefs() called");
         CountdownSettings ret = new CountdownSettings();
@@ -80,6 +90,10 @@ public class CountdownSettings implements Serializable{
         return ret;
     }
 
+    /**
+     * THIS WILL BE OMITTED. NOW USES AN SQLITE DB FOR STORAGE
+     * @param sharedPreferences
+     */
     public void saveToSharedPrefs(SharedPreferences sharedPreferences) {
         Log.d(TAG, "saveToSharedPrefs() called");
         SharedPreferences.Editor editor = sharedPreferences.edit();
@@ -93,10 +107,12 @@ public class CountdownSettings implements Serializable{
     }
 
     /**
+     * THIS WILL BE OMITTED. NOW USES AN SQLITE DB FOR STORAGE
+     *
      * Ugly way to store excluded days into SharedPrefs as it
      * supports Set<String>s and not ArrayList<>s directly.
      *
-     * TODO: This needs to be redone somehow else.
+     *
      * @return
      */
     private Set<String> excludedDaysToStringSet(int toOrFrom) {
@@ -122,6 +138,8 @@ public class CountdownSettings implements Serializable{
 
 
     /**
+     * THIS WILL BE OMITTED. NOW USES AN SQLITE DB FOR STORAGE
+     *
      *  Ugly way to store excluded days into SharedPrefs as it
      * supports Set<String>s and not ArrayList<>s directly.
      *
@@ -319,5 +337,21 @@ public class CountdownSettings implements Serializable{
         Log.d(TAG, "getExcludedDays() - count: "+Integer.toString(excludedDays.size()));
 
         return excludedDays;
+    }
+
+    public int getDbId() {
+        return dbId;
+    }
+
+    public void setDbId(int dbId) {
+        this.dbId = dbId;
+    }
+
+    public String getLabel() {
+        return label;
+    }
+
+    public void setLabel(String label) {
+        this.label = label;
     }
 }

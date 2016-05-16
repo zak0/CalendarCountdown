@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -16,11 +17,15 @@ import android.widget.DatePicker;
 import android.widget.TextView;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
+import java.util.List;
 
 public class SetupActivity extends AppCompatActivity {
+
+    private static final String TAG = "SetupActivity";
 
     private CountdownSettings settings;
     private CheckBox checkBoxExcludeWeekends;
@@ -89,7 +94,7 @@ public class SetupActivity extends AppCompatActivity {
      * Sets the Views to correspond to the existing settings
      */
     private void setExistingSettingsToViews() {
-        // IF first time setting up, set calendar to current date
+        // If first time setting up, set calendar to current date
         String dateString = new SimpleDateFormat("d.M.yyyy").format(new Date(settings.getEndDate()));
         textViewSetDate.setText(dateString);
         checkBoxExcludeWeekends.setChecked(settings.isExcludeWeekends());
@@ -98,18 +103,28 @@ public class SetupActivity extends AppCompatActivity {
 
     @Override
     protected void onPause() {
+        Log.d(TAG, "onPause() - called");
         super.onPause();
 
-        settings.saveToSharedPrefs(getSharedPreferences(MainActivity.PREFS_NAME, 0));
+        // Save settings to DB
+        // As a list for future support of multiple countdowns.
+        DatabaseHelper db = new DatabaseHelper(this, DatabaseHelper.DB_NAME, null, DatabaseHelper.DB_VERSION);
+        db.openDb();
+        List<CountdownSettings> list = new ArrayList<>();
+        list.add(settings);
+        db.saveToDB(list);
+        db.closeDb();
+
+        //settings.saveToSharedPrefs(getSharedPreferences(MainActivity.PREFS_NAME, 0));
         updateWidgets();
     }
 
     @Override
     protected void onStop() {
+        Log.d(TAG, "onStop() - called");
         super.onStop();
 
-        settings.saveToSharedPrefs(getSharedPreferences(MainActivity.PREFS_NAME, 0));
-        updateWidgets();
+
     }
 
     /**

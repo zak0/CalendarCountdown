@@ -3,6 +3,7 @@ package com.gmail.jaaska.jaakko.calendarcountdown;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.TextView;
@@ -12,21 +13,28 @@ import java.util.Date;
 
 public class MainActivity extends AppCompatActivity {
 
+    private static final String TAG = "MainActivity";
+
     public static final String PREFS_NAME = "CountdownPrefs";
     private TextView textViewEndDate;
     private TextView textViewDaysLeft;
 
     private CountdownSettings settings;
 
+    private DatabaseHelper db;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        settings = new CountdownSettings().loadFromSharedPrefs(getSharedPreferences(PREFS_NAME, 0));
+        //settings = new CountdownSettings().loadFromSharedPrefs(getSharedPreferences(PREFS_NAME, 0));
 
         textViewEndDate = (TextView) findViewById(R.id.textViewEndDate);
         textViewDaysLeft = (TextView) findViewById(R.id.textViewDaysLeft);
+
+        db = new DatabaseHelper(this, DatabaseHelper.DB_NAME, null, DatabaseHelper.DB_VERSION);
+
 
         /*
         Button buttonSetup = (Button) findViewById(R.id.buttonSetup);
@@ -79,14 +87,32 @@ public class MainActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
 
-        settings = new CountdownSettings().loadFromSharedPrefs(getSharedPreferences(PREFS_NAME, 0));
+        Log.d(TAG, "onResume() - called");
+
+        // Read settings from DB
+        db.openDb();
+        if(db.loadSettings().size() > 0) {
+            settings = db.loadSettings().get(0);
+        }
+        db.closeDb();
+
+        if(settings == null) {
+            Log.d(TAG, "onResume() - settings was null");
+            settings = new CountdownSettings();
+        }
+
+
+        //settings = new CountdownSettings().loadFromSharedPrefs(getSharedPreferences(PREFS_NAME, 0));
+
 
         if(settings.endDateIsValid()) {
             refreshViews();
         }
+
     }
 
     private void refreshViews() {
+        Log.d(TAG, "refreshViews() - called");
         String dateString = new SimpleDateFormat("d.M.yyyy").format(new Date(settings.getEndDate()));
         textViewEndDate.setText(dateString);
         textViewDaysLeft.setText(Integer.toString(settings.getDaysToEndDate())+ " days left");
