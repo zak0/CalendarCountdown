@@ -15,6 +15,7 @@
         android:layout_height="wrap_content"
         android:text="End Date"
         android:textStyle="bold"
+        android:textSize="@dimen/text_body"
         android:id="@+id/textViewEndDateTitle" />
 
     <RelativeLayout
@@ -37,8 +38,7 @@
             android:id="@+id/textViewSetEndDate"
             android:text="24.12.1969"
             android:textColor="@color/colorBlack"
-            android:layout_toRightOf="@id/imageViewCalendar"
-            android:layout_centerVertical="true"/>
+            android:layout_toRightOf="@id/imageViewCalendar" />
 
         <EditText
             android:layout_width="match_parent"
@@ -57,18 +57,29 @@
         android:id="@+id/checkBoxExcludeWeekends"
         android:layout_below="@id/relativeLayoutEndDate"/>
 
+    <CheckBox
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:checked="false"
+        android:text="Use This On Widget"
+        android:id="@+id/checkBoxWidget"
+        android:layout_below="@id/checkBoxExcludeWeekends"/>
+
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Excluded Days"
         android:id="@+id/textViewExcludedDaysTitle"
         android:textStyle="bold"
-        android:layout_below="@id/checkBoxExcludeWeekends"/>
+        android:textSize="@dimen/text_body"
+        android:layout_below="@id/checkBoxWidget"/>
 
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/buttonAddExcludeRange"
+        android:textSize="@dimen/text_button"
+        style="@style/Base.Widget.AppCompat.Button.Borderless.Colored"
         android:layout_below="@id/textViewExcludedDaysTitle"
         android:text="Add"/>
 

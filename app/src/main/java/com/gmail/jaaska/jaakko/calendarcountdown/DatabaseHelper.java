@@ -101,6 +101,25 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     }
 
     /**
+     * Loads the Countdown that is set to be used on a widget.
+     * @return settings for wigdet
+     */
+    public CountdownSettings loadSettingsForWidget() {
+        CountdownSettings ret = null;
+
+        String sql = "select * from "+TBLCOUNTDOWN+" where "+COLCDWIDGET+"=1";
+        Cursor cur = db.rawQuery(sql, null);
+        cur.moveToFirst();
+        if(!cur.isAfterLast()) {
+            ret = cursorToCountdown(cur);
+            loadExcludedDaysForCountdown(ret);
+        }
+
+
+        return ret;
+    }
+
+    /**
      * Reads and returns settings from database.
      * @return List of all countdowns in the database.
      */
@@ -175,16 +194,17 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 Log.d(TAG, "saveToDB() - updating countdownid "+Integer.toString(settings.getDbId()));
                 sql = "update "+TBLCOUNTDOWN+" set "+COLCDENDDATE+"="+Long.toString(settings.getEndDate())+","+
                         COLCDEXCLUDEWEEKENDS+"="+ (settings.isExcludeWeekends() ? "1" : "0") + ","+
-                        COLCDLABEL+"='"+settings.getLabel()+"' where "+COLCOUNTDOWNID+"="+Integer.toString(settings.getDbId());
+                        COLCDLABEL+"='"+settings.getLabel()+"',"+
+                        COLCDWIDGET+"="+(settings.isUseOnWidget() ? "1" : "0")+" where "+COLCOUNTDOWNID+"="+Integer.toString(settings.getDbId());
                 db.execSQL(sql);
             }
 
             else {
                 // It did not exist --> insert a new entry
                 Log.d(TAG, "saveToDB() - inserting a new countdown entry");
-                sql = "insert into "+TBLCOUNTDOWN+"("+COLCDENDDATE+","+COLCDEXCLUDEWEEKENDS+","+COLCDLABEL+") "+
+                sql = "insert into "+TBLCOUNTDOWN+"("+COLCDENDDATE+","+COLCDEXCLUDEWEEKENDS+","+COLCDLABEL+","+COLCDWIDGET+") "+
                         "values("+Long.toString(settings.getEndDate())+","+(settings.isExcludeWeekends() ? "1" : "0")+","+
-                        "'"+settings.getLabel()+"')";
+                        "'"+settings.getLabel()+"',"+(settings.isUseOnWidget() ? "1" : "0")+")";
                 db.execSQL(sql);
 
                 // Update settings with corresponding rowID.
@@ -255,6 +275,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         ret.setEndDate(cur.getLong(1));
         ret.setExcludeWeekends(cur.getInt(2) == 1);
         ret.setLabel(cur.getString(3));
+        ret.setUseOnWidget(cur.getInt(4) == 1);
 
         return ret;
     }

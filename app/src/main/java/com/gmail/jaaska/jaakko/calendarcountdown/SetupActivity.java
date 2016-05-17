@@ -32,6 +32,7 @@ public class SetupActivity extends AppCompatActivity {
 
     private CountdownSettings settings;
     private CheckBox checkBoxExcludeWeekends;
+    private CheckBox checkBoxUseOnWidget;
     private Calendar calendar;
     private TextView textViewSetDate;
     private EditText editTextLabel;
@@ -56,6 +57,7 @@ public class SetupActivity extends AppCompatActivity {
         setTitle("Setup Countdown");
 
         checkBoxExcludeWeekends = (CheckBox) findViewById(R.id.checkBoxExcludeWeekends);
+        checkBoxUseOnWidget = (CheckBox) findViewById(R.id.checkBoxWidget);
         textViewSetDate = (TextView) findViewById(R.id.textViewSetEndDate);
         recyclerViewExcludedRanges = (RecyclerView) findViewById(R.id.recyclerViewExcludedDays);
         editTextLabel = (EditText) findViewById(R.id.editTextLabel);
@@ -98,6 +100,13 @@ public class SetupActivity extends AppCompatActivity {
             }
         });
 
+        checkBoxUseOnWidget.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                settings.setUseOnWidget(isChecked);
+            }
+        });
+
         Button buttonAddExcludedDays = (Button) findViewById(R.id.buttonAddExcludeRange);
         buttonAddExcludedDays.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -123,6 +132,7 @@ public class SetupActivity extends AppCompatActivity {
         String dateString = new SimpleDateFormat("d.M.yyyy").format(new Date(settings.getEndDate()));
         textViewSetDate.setText(dateString);
         checkBoxExcludeWeekends.setChecked(settings.isExcludeWeekends());
+        checkBoxUseOnWidget.setChecked(settings.isUseOnWidget());
         editTextLabel.setText(settings.getLabel());
 
     }
@@ -131,14 +141,6 @@ public class SetupActivity extends AppCompatActivity {
     protected void onPause() {
         Log.d(TAG, "onPause() - called");
         super.onPause();
-
-        // Save settings to DB
-        if(validateInputs()) {
-            // But only if entered data is OK.
-            db.openDb();
-            db.saveCountdownToDB(settings);
-            db.closeDb();
-        }
 
         updateWidgets();
     }
@@ -207,7 +209,15 @@ public class SetupActivity extends AppCompatActivity {
                 finish();
                 break;
             case R.id.menuitem_setup_done:
-                // Saving is done at onPause(), so we can just finish() this Activity.
+                // Save settings to DB
+                if(validateInputs()) {
+                    // But only if entered data is OK.
+                    db.openDb();
+                    db.saveCountdownToDB(settings);
+                    db.closeDb();
+                }
+
+                // Then finish() this activity.
                 finish();
                 break;
         }

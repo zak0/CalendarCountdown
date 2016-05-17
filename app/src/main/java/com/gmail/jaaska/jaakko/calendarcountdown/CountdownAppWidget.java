@@ -29,9 +29,13 @@ public class CountdownAppWidget extends AppWidgetProvider {
         // Load settings from DB
         DatabaseHelper db = new DatabaseHelper(context, DatabaseHelper.DB_NAME, null, DatabaseHelper.DB_VERSION);
         db.openDb();
+
+        /*
         if(db.loadSettings().size() > 0) {
             settings = db.loadSettings().get(0);
-        }
+        }*/
+
+        settings = db.loadSettingsForWidget();
         db.closeDb();
 
         // Construct the RemoteViews object

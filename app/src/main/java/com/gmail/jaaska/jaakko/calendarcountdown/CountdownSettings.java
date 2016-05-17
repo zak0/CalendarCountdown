@@ -24,6 +24,7 @@ public class CountdownSettings implements Serializable{
 
     private long endDate; // "zero-date" of the countdown
     private boolean excludeWeekends; // are weekened excluded or not
+    private boolean useOnWidget; // tells if this is the Countdown to show on a widget
 
     // SharedPreferences keys
     private String keyEndDate = "endDate";
@@ -42,6 +43,7 @@ public class CountdownSettings implements Serializable{
         excludedDays = new ArrayList<>();
         label = "";
         dbId = Integer.MIN_VALUE;
+        useOnWidget = false;
     }
 
     public long getEndDate() {
@@ -353,5 +355,13 @@ public class CountdownSettings implements Serializable{
 
     public void setLabel(String label) {
         this.label = label;
+    }
+
+    public boolean isUseOnWidget() {
+        return useOnWidget;
+    }
+
+    public void setUseOnWidget(boolean useOnWidget) {
+        this.useOnWidget = useOnWidget;
     }
 }
