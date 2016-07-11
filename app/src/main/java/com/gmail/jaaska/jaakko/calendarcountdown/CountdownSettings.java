@@ -38,7 +38,7 @@ public class CountdownSettings implements Serializable{
     private String label; // label of the countdown
 
     public CountdownSettings() {
-        endDate = 0;
+        endDate = getCurrentTimeWithOnlyDate(); // init new countdown to this day
         excludeWeekends = false;
         excludedDays = new ArrayList<>();
         label = "";
