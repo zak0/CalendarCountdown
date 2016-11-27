@@ -118,6 +118,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         // init general settings table with "default" values
         // note: this table only has one row
+        this.db = db;
         saveGeneralSettings();
 
         Log.d(TAG, "initSchema() - done");
