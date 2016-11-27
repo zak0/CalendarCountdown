@@ -6,6 +6,7 @@ import android.util.Log;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
@@ -15,7 +16,7 @@ import java.util.Set;
 /**
  * Created by jaakko on 2.5.2016.
  */
-public class CountdownSettings implements Serializable{
+public class CountdownSettings implements Serializable, Comparable{
 
     private static final String TAG = "CountdownSettings";
 
@@ -326,6 +327,29 @@ public class CountdownSettings implements Serializable{
         return weekEndDays;
     }
 
+    @Override
+    public int compareTo(Object o) {
+        int ret = 0;
+        GeneralSettings gs = GeneralSettings.getInstance();
+        CountdownSettings cs = (CountdownSettings) o;
+
+        switch (gs.getSortOrder()) {
+            case GeneralSettings.SORT_BY_DAYS_LEFT:
+                // Compare by days count
+                if (getDaysToEndDate() > cs.getDaysToEndDate()) {
+                    ret = 1;
+                }
+                else if (getDaysToEndDate() < cs.getDaysToEndDate()) {
+                    ret = -1;
+                }
+                return ret;
+
+            case GeneralSettings.SORT_BY_EVENT_LABEL:
+                return getLabel().toUpperCase().compareTo(cs.getLabel().toUpperCase());
+        }
+
+        return ret;
+    }
 
     public void addExcludedDays(ExcludedDays days) {
         excludedDays.add(days);

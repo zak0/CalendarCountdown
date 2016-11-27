@@ -22,10 +22,11 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     // Constants
     public static final String DB_NAME = "calendarcountdown.db";
-    public static final int DB_VERSION = 1;
+    public static final int DB_VERSION = 2;
 
     private static final String TBLCOUNTDOWN = "countdown";
     private static final String TBLEXCLUDEDDAYS = "excludeddays";
+    private static final String TBLGENERALSETTINGS = "generalsettings";
 
     private static final String COLCOUNTDOWNID = "countdownid";
     private static final String COLCDENDDATE = "cdenddate";
@@ -36,6 +37,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String COLEXCLUDEDDAYSID = "excludeddaysid";
     private static final String COLEDFROMDATE = "edfromdate";
     private static final String COLEDTODATE = "edtodate";
+
+    private static final String COLGSSORTBY = "gssortby";
 
 
     // Member variables
@@ -68,7 +71,18 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+        // Add general settings table
+        if (oldVersion == 1 && newVersion > 1) {
+            // create generalsettings table
+            String sql = "CREATE TABLE '"+TBLGENERALSETTINGS+"' (" +
+                    "'"+COLGSSORTBY+"' INTEGER)";
+            db.execSQL(sql);
 
+            // init general settings table with "default" values
+            // note: this table only has one row
+            this.db = db;
+            saveGeneralSettings();
+        }
     }
 
     /**
@@ -95,8 +109,17 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 "`"+COLEDTODATE+"` INTEGER," +
                 "PRIMARY KEY("+COLEXCLUDEDDAYSID+")" +
                 ")";
-
         db.execSQL(sql);
+
+        // create generalsettings table
+        sql = "CREATE TABLE '"+TBLGENERALSETTINGS+"' (" +
+                "'"+COLGSSORTBY+"' INTEGER)";
+        db.execSQL(sql);
+
+        // init general settings table with "default" values
+        // note: this table only has one row
+        saveGeneralSettings();
+
         Log.d(TAG, "initSchema() - done");
     }
 
@@ -117,6 +140,35 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
 
         return ret;
+    }
+
+    public void saveGeneralSettings() {
+        GeneralSettings gs = GeneralSettings.getInstance();
+
+        // GeneralSettings table only has one row.
+        // Empty the table before saving to ensure there stays only one...
+        String sql = "delete from "+TBLGENERALSETTINGS;
+        db.execSQL(sql);
+
+        // ...Then insert the settings into the table.
+        sql = "insert into "+TBLGENERALSETTINGS+" ("+
+                COLGSSORTBY+") values ("+
+                gs.getSortOrder()+")";
+        db.execSQL(sql);
+
+    }
+
+    public void loadGeneralSettings() {
+        GeneralSettings gs = GeneralSettings.getInstance();
+
+        // GeneralSettings table only has a one row
+        String sql = "select * from "+TBLGENERALSETTINGS;
+
+        Cursor cur = db.rawQuery(sql, null);
+        cur.moveToFirst();
+        if (!cur.isAfterLast()) {
+            gs.setSortOrder(cur.getInt(0));
+        }
     }
 
     /**
