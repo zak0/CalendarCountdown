@@ -1,4 +1,4 @@
-package com.gmail.jaaska.jaakko.calendarcountdown;
+package com.gmail.jaaska.jaakko.calendarcountdown.ui;
 
 import android.app.DatePickerDialog;
 import android.appwidget.AppWidgetManager;
@@ -20,6 +20,11 @@ import android.widget.CompoundButton;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.TextView;
+
+import com.gmail.jaaska.jaakko.calendarcountdown.widget.CountdownAppWidget;
+import com.gmail.jaaska.jaakko.calendarcountdown.data.CountdownSettings;
+import com.gmail.jaaska.jaakko.calendarcountdown.storage.DatabaseHelper;
+import com.gmail.jaaska.jaakko.calendarcountdown.R;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;

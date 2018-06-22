@@ -1,4 +1,4 @@
-package com.gmail.jaaska.jaakko.calendarcountdown;
+package com.gmail.jaaska.jaakko.calendarcountdown.data;
 
 /**
  * Container for general application settings.

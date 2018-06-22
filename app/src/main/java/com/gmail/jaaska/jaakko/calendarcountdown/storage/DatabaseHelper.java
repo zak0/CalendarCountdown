@@ -1,10 +1,14 @@
-package com.gmail.jaaska.jaakko.calendarcountdown;
+package com.gmail.jaaska.jaakko.calendarcountdown.storage;
 
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
+
+import com.gmail.jaaska.jaakko.calendarcountdown.data.CountdownSettings;
+import com.gmail.jaaska.jaakko.calendarcountdown.data.ExcludedDays;
+import com.gmail.jaaska.jaakko.calendarcountdown.data.GeneralSettings;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -1,10 +1,13 @@
-package com.gmail.jaaska.jaakko.calendarcountdown;
+package com.gmail.jaaska.jaakko.calendarcountdown.ui;
 
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+
+import com.gmail.jaaska.jaakko.calendarcountdown.data.ExcludedDays;
+import com.gmail.jaaska.jaakko.calendarcountdown.R;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;

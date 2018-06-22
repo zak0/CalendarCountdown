@@ -1,10 +1,14 @@
-package com.gmail.jaaska.jaakko.calendarcountdown;
+package com.gmail.jaaska.jaakko.calendarcountdown.widget;
 
 import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProvider;
 import android.content.Context;
 import android.util.Log;
 import android.widget.RemoteViews;
+
+import com.gmail.jaaska.jaakko.calendarcountdown.data.CountdownSettings;
+import com.gmail.jaaska.jaakko.calendarcountdown.storage.DatabaseHelper;
+import com.gmail.jaaska.jaakko.calendarcountdown.R;
 
 /**
  * Implementation of App Widget functionality.

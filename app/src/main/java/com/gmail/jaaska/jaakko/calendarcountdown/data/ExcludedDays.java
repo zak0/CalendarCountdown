@@ -1,4 +1,4 @@
-package com.gmail.jaaska.jaakko.calendarcountdown;
+package com.gmail.jaaska.jaakko.calendarcountdown.data;
 
 import java.io.Serializable;
 

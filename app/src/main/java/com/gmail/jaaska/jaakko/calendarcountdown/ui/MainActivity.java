@@ -1,9 +1,8 @@
-package com.gmail.jaaska.jaakko.calendarcountdown;
+package com.gmail.jaaska.jaakko.calendarcountdown.ui;
 
 import android.app.Dialog;
 import android.content.Intent;
 import android.os.Bundle;
-import android.provider.MediaStore;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
@@ -15,7 +14,11 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
-import android.widget.Toast;
+
+import com.gmail.jaaska.jaakko.calendarcountdown.data.CountdownSettings;
+import com.gmail.jaaska.jaakko.calendarcountdown.storage.DatabaseHelper;
+import com.gmail.jaaska.jaakko.calendarcountdown.data.GeneralSettings;
+import com.gmail.jaaska.jaakko.calendarcountdown.R;
 
 import java.util.ArrayList;
 import java.util.Collections;
