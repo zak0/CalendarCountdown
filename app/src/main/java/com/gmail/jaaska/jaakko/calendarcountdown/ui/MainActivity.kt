@@ -14,7 +14,6 @@ import com.gmail.jaaska.jaakko.calendarcountdown.data.GeneralSettings
 import com.gmail.jaaska.jaakko.calendarcountdown.storage.DatabaseHelper
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.dialog_sort_order.*
-import java.util.*
 
 class MainActivity : AppCompatActivity() {
 
@@ -31,7 +30,7 @@ class MainActivity : AppCompatActivity() {
         db = DatabaseHelper(this, DatabaseHelper.DB_NAME, null, DatabaseHelper.DB_VERSION)
 
         recyclerViewCountdowns.layoutManager = LinearLayoutManager(this)
-        adapter = CountdownsRecyclerViewAdapter(countdowns)
+        adapter = CountdownsRecyclerViewAdapter(countdowns ?: ArrayList())
         recyclerViewCountdowns.adapter = adapter
 
         floatingActionButtonAddCountdown.setOnClickListener {
@@ -126,7 +125,7 @@ class MainActivity : AppCompatActivity() {
     private fun refreshViews() {
         Log.d(TAG, "refreshViews() - called")
         countdowns?.sort()
-        val adapter = CountdownsRecyclerViewAdapter(countdowns)
+        val adapter = CountdownsRecyclerViewAdapter(countdowns ?: ArrayList())
         recyclerViewCountdowns.swapAdapter(adapter, true)
     }
 
