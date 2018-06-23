@@ -16,9 +16,9 @@ import android.widget.DatePicker
 import com.gmail.jaaska.jaakko.calendarcountdown.R
 import com.gmail.jaaska.jaakko.calendarcountdown.data.CountdownSettings
 import com.gmail.jaaska.jaakko.calendarcountdown.storage.DatabaseHelper
+import com.gmail.jaaska.jaakko.calendarcountdown.util.DateUtil
 import com.gmail.jaaska.jaakko.calendarcountdown.widget.CountdownAppWidget
 import kotlinx.android.synthetic.main.activity_setup.*
-import java.text.SimpleDateFormat
 import java.util.*
 
 class SetupActivity : AppCompatActivity() {
@@ -93,8 +93,7 @@ class SetupActivity : AppCompatActivity() {
     private fun setExistingSettingsToViews() {
         // If first time setting up, set calendar to current date
         // TODO Consider using system default locale instead of Locale.US
-        val dateString = SimpleDateFormat("d.M.yyyy", Locale.US).format(Date(settings.endDate))
-        textViewSetEndDate.text = dateString
+        textViewSetEndDate.text = DateUtil.formatDate(settings.endDate)
         checkBoxExcludeWeekends.isChecked = settings.isExcludeWeekends
         checkBoxWidget.isChecked = settings.isUseOnWidget == true
         editTextLabel.setText(settings.label)
