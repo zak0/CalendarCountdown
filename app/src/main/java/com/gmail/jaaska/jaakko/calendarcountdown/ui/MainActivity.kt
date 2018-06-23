@@ -3,26 +3,21 @@ package com.gmail.jaaska.jaakko.calendarcountdown.ui
 import android.app.Dialog
 import android.content.Intent
 import android.os.Bundle
-import android.support.design.widget.FloatingActionButton
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.LinearLayoutManager
-import android.support.v7.widget.RecyclerView
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
-import android.view.View
-import android.widget.Button
-import android.widget.RadioButton
-import android.widget.RadioGroup
 import com.gmail.jaaska.jaakko.calendarcountdown.R
 import com.gmail.jaaska.jaakko.calendarcountdown.data.CountdownSettings
 import com.gmail.jaaska.jaakko.calendarcountdown.data.GeneralSettings
 import com.gmail.jaaska.jaakko.calendarcountdown.storage.DatabaseHelper
+import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.android.synthetic.main.dialog_sort_order.*
 import java.util.*
 
 class MainActivity : AppCompatActivity() {
 
-    private var recyclerView: RecyclerView? = null
     private var adapter: CountdownsRecyclerViewAdapter? = null
     private var countdowns: List<CountdownSettings>? = null
     private var db: DatabaseHelper? = null
@@ -35,13 +30,11 @@ class MainActivity : AppCompatActivity() {
 
         db = DatabaseHelper(this, DatabaseHelper.DB_NAME, null, DatabaseHelper.DB_VERSION)
 
-        recyclerView = findViewById<View>(R.id.recyclerViewCountdowns) as RecyclerView
-        recyclerView!!.layoutManager = LinearLayoutManager(this)
+        recyclerViewCountdowns.layoutManager = LinearLayoutManager(this)
         adapter = CountdownsRecyclerViewAdapter(countdowns)
-        recyclerView!!.adapter = adapter
+        recyclerViewCountdowns.adapter = adapter
 
-        val fab = findViewById<View>(R.id.floatingActionButtonAddCountdown) as FloatingActionButton
-        fab.setOnClickListener {
+        floatingActionButtonAddCountdown.setOnClickListener {
             val setupIntent = Intent(this@MainActivity, SetupActivity::class.java)
             setupIntent.putExtra(CountdownSettings.extraName, CountdownSettings())
             startActivity(setupIntent)
@@ -80,21 +73,15 @@ class MainActivity : AppCompatActivity() {
         sortOrderDialog.setTitle("Sort by")
         sortOrderDialog.setContentView(R.layout.dialog_sort_order)
 
-        val cancelButton = sortOrderDialog.findViewById<View>(R.id.buttonCancel) as Button
-        cancelButton.setOnClickListener { sortOrderDialog.dismiss() }
-
-        val radioGroup = sortOrderDialog.findViewById<View>(R.id.radioSortOrder) as RadioGroup
+        sortOrderDialog.buttonCancel.setOnClickListener { sortOrderDialog.dismiss() }
 
         // Initialize the radio button to be checked on the current sorting order.
-        val radioDaysLeft = sortOrderDialog.findViewById<View>(R.id.radioDaysLeft) as RadioButton
-        val radioEventLabel = sortOrderDialog.findViewById<View>(R.id.radioEventLabel) as RadioButton
-
         when (GeneralSettings.getInstance().sortOrder) {
-            GeneralSettings.SORT_BY_DAYS_LEFT -> radioDaysLeft.isChecked = true
-            GeneralSettings.SORT_BY_EVENT_LABEL -> radioEventLabel.isChecked = true
+            GeneralSettings.SORT_BY_DAYS_LEFT -> sortOrderDialog.radioDaysLeft.isChecked = true
+            GeneralSettings.SORT_BY_EVENT_LABEL -> sortOrderDialog.radioEventLabel.isChecked = true
         }
 
-        radioGroup.setOnCheckedChangeListener { _, i ->
+        sortOrderDialog.radioSortOrder.setOnCheckedChangeListener { _, i ->
             when (i) {
                 R.id.radioDaysLeft ->
                     // Store into settings
@@ -139,7 +126,7 @@ class MainActivity : AppCompatActivity() {
     private fun refreshViews() {
         Log.d(TAG, "refreshViews() - called")
         val adapter = CountdownsRecyclerViewAdapter(countdowns)
-        recyclerView?.swapAdapter(adapter, true)
+        recyclerViewCountdowns.swapAdapter(adapter, true)
     }
 
     companion object {

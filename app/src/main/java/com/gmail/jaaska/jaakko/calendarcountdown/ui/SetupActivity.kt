@@ -12,8 +12,6 @@ import android.text.TextWatcher
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
-import android.view.View
-import android.widget.Button
 import android.widget.DatePicker
 import com.gmail.jaaska.jaakko.calendarcountdown.R
 import com.gmail.jaaska.jaakko.calendarcountdown.data.CountdownSettings
@@ -77,8 +75,7 @@ class SetupActivity : AppCompatActivity() {
 
         checkBoxWidget.setOnCheckedChangeListener { _, isChecked -> settings.isUseOnWidget = isChecked }
 
-        val buttonAddExcludedDays = findViewById<View>(R.id.buttonAddExcludeRange) as Button
-        buttonAddExcludedDays.setOnClickListener {
+        buttonAddExcludeRange.setOnClickListener {
             val dlg = AddExcludedDaysDialog(this@SetupActivity, settings, recyclerViewExcludedDays)
             dlg.show()
         }
