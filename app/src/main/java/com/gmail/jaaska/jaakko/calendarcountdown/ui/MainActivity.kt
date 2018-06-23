@@ -19,7 +19,7 @@ import java.util.*
 class MainActivity : AppCompatActivity() {
 
     private var adapter: CountdownsRecyclerViewAdapter? = null
-    private var countdowns: List<CountdownSettings>? = null
+    private var countdowns: ArrayList<CountdownSettings>? = null
     private var db: DatabaseHelper? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -115,7 +115,7 @@ class MainActivity : AppCompatActivity() {
         // Read settings from DB
         db?.apply {
             openDb()
-            countdowns = loadSettings()
+            countdowns = ArrayList(loadSettings())
             loadGeneralSettings()
             close()
         }
@@ -125,6 +125,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun refreshViews() {
         Log.d(TAG, "refreshViews() - called")
+        countdowns?.sort()
         val adapter = CountdownsRecyclerViewAdapter(countdowns)
         recyclerViewCountdowns.swapAdapter(adapter, true)
     }
