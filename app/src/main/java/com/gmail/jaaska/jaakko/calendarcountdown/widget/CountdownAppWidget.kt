@@ -23,7 +23,7 @@ class CountdownAppWidget : AppWidgetProvider() {
         Log.d(TAG, "updateAppWidget() - called")
 
         // Load settings from DB
-        DatabaseHelper(context, DatabaseHelper.DB_NAME, null, DatabaseHelper.DB_VERSION).apply {
+        DatabaseHelper(context, DatabaseHelper.DB_NAME, DatabaseHelper.DB_VERSION).apply {
             openDb()
             settings = loadSettingsForWidget()
             closeDb()

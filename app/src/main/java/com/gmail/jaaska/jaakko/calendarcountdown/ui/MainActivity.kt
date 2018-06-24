@@ -27,7 +27,7 @@ class MainActivity : AppCompatActivity() {
 
         countdowns = ArrayList()
 
-        db = DatabaseHelper(this, DatabaseHelper.DB_NAME, null, DatabaseHelper.DB_VERSION)
+        db = DatabaseHelper(this, DatabaseHelper.DB_NAME, DatabaseHelper.DB_VERSION)
 
         recyclerViewCountdowns.layoutManager = LinearLayoutManager(this)
         adapter = CountdownsRecyclerViewAdapter(countdowns ?: ArrayList())
