@@ -2,4 +2,8 @@
     <string name="app_name">CalendarCountdown</string>
     <string name="appwidget_text">EXAMPLE</string>
     <string name="add_widget">Add widget</string>
+
+    <string name="setup_excluded_days_from">From %s</string>
+    <string name="setup_excluded_days_to">To %s</string>
+    <string name="setup_excluded_days_count">%d days</string>
 </resources>
