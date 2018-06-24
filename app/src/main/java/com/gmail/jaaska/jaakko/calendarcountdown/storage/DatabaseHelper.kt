@@ -118,7 +118,7 @@ class DatabaseHelper(context: Context,
     }
 
     fun saveGeneralSettings() {
-        val gs = GeneralSettings.getInstance()
+        val gs = GeneralSettings
 
         // GeneralSettings table only has one row.
         // Empty the table before saving to ensure there stays only one...
@@ -134,7 +134,7 @@ class DatabaseHelper(context: Context,
     }
 
     fun loadGeneralSettings() {
-        val gs = GeneralSettings.getInstance()
+        val gs = GeneralSettings
 
         // GeneralSettings table only has a one row
         val sql = "select * from $TBLGENERALSETTINGS"

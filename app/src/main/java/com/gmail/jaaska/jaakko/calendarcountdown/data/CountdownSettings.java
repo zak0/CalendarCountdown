@@ -329,10 +329,9 @@ public class CountdownSettings implements Serializable, Comparable{
     @Override
     public int compareTo(Object o) {
         int ret = 0;
-        GeneralSettings gs = GeneralSettings.getInstance();
         CountdownSettings cs = (CountdownSettings) o;
 
-        switch (gs.getSortOrder()) {
+        switch (GeneralSettings.INSTANCE.getSortOrder()) {
             case GeneralSettings.SORT_BY_DAYS_LEFT:
                 // Compare by days count
                 if (getDaysToEndDate() > cs.getDaysToEndDate()) {

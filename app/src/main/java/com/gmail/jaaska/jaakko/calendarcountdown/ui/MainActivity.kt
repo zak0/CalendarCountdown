@@ -75,7 +75,7 @@ class MainActivity : AppCompatActivity() {
         sortOrderDialog.buttonCancel.setOnClickListener { sortOrderDialog.dismiss() }
 
         // Initialize the radio button to be checked on the current sorting order.
-        when (GeneralSettings.getInstance().sortOrder) {
+        when (GeneralSettings.sortOrder) {
             GeneralSettings.SORT_BY_DAYS_LEFT -> sortOrderDialog.radioDaysLeft.isChecked = true
             GeneralSettings.SORT_BY_EVENT_LABEL -> sortOrderDialog.radioEventLabel.isChecked = true
         }
@@ -84,10 +84,10 @@ class MainActivity : AppCompatActivity() {
             when (i) {
                 R.id.radioDaysLeft ->
                     // Store into settings
-                    GeneralSettings.getInstance().sortOrder = GeneralSettings.SORT_BY_DAYS_LEFT
+                    GeneralSettings.sortOrder = GeneralSettings.SORT_BY_DAYS_LEFT
                 R.id.radioEventLabel ->
                     // Store into settings
-                    GeneralSettings.getInstance().sortOrder = GeneralSettings.SORT_BY_EVENT_LABEL
+                    GeneralSettings.sortOrder = GeneralSettings.SORT_BY_EVENT_LABEL
             }
 
             sortOrderDialog.dismiss()
