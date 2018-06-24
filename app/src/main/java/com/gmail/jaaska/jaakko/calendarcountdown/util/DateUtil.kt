@@ -5,5 +5,8 @@ import java.util.*
 
 object DateUtil {
 
-    fun formatDate(dateInMillis: Long): String = SimpleDateFormat("d.M.yyyy", Locale.US).format(Date(dateInMillis))
+    private const val FORMAT = "d.M.yyyy"
+
+    fun formatDate(dateInMillis: Long): String = formatDate(Date(dateInMillis))
+    fun formatDate(date: Date): String = SimpleDateFormat(FORMAT, Locale.US).format(date)
 }
