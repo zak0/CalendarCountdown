@@ -4,6 +4,7 @@ import android.appwidget.AppWidgetManager
 import android.content.ComponentName
 import android.content.Intent
 import android.os.Bundle
+import android.support.v7.app.AlertDialog
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.DividerItemDecoration
 import android.support.v7.widget.LinearLayoutManager
@@ -19,6 +20,7 @@ import com.gmail.jaaska.jaakko.calendarcountdown.storage.DatabaseHelper
 import com.gmail.jaaska.jaakko.calendarcountdown.util.DateUtil
 import com.gmail.jaaska.jaakko.calendarcountdown.widget.CountdownAppWidget
 import kotlinx.android.synthetic.main.activity_setup.*
+import kotlinx.android.synthetic.main.dialog_countdown_title.view.*
 import kotlinx.android.synthetic.main.listitem_setup.view.*
 
 class SetupActivity : AppCompatActivity() {
@@ -126,6 +128,24 @@ class SetupActivity : AppCompatActivity() {
         return super.onOptionsItemSelected(item)
     }
 
+    private fun showSetTitleDialog() {
+        val view = View.inflate(this, R.layout.dialog_countdown_title, null)
+
+        if (settings.label.isNotEmpty()) {
+            view.editTextTitle.setText(settings.label)
+        }
+
+        AlertDialog.Builder(this)
+                .setView(view)
+                .setTitle(R.string.setup_dialog_title_title)
+                .setPositiveButton(R.string.common_done) { _, _ ->
+                    settings.label = view.editTextTitle.text.toString()
+                    adapter?.notifyDataSetChanged()
+                }
+                .setNegativeButton(R.string.common_cancel) { _, _ -> }
+                .show()
+    }
+
     private object SetupItemType {
         const val TITLE = 100
         const val THE_DATE = 200
@@ -152,6 +172,7 @@ class SetupActivity : AppCompatActivity() {
                     SetupItemType.TITLE -> {
                         title.text = getString(R.string.setup_setting_countdown_title)
                         subtitle.text = settings.label
+                        setOnClickListener { showSetTitleDialog() }
                     }
                     SetupItemType.THE_DATE -> {
                         title.text = getString(R.string.setup_setting_end_date)
