@@ -1,5 +1,6 @@
 package com.gmail.jaaska.jaakko.calendarcountdown.ui
 
+import android.app.DatePickerDialog
 import android.appwidget.AppWidgetManager
 import android.content.ComponentName
 import android.content.Intent
@@ -22,6 +23,7 @@ import com.gmail.jaaska.jaakko.calendarcountdown.widget.CountdownAppWidget
 import kotlinx.android.synthetic.main.activity_setup.*
 import kotlinx.android.synthetic.main.dialog_countdown_title.view.*
 import kotlinx.android.synthetic.main.listitem_setup.view.*
+import java.util.*
 
 class SetupActivity : AppCompatActivity() {
 
@@ -146,6 +148,17 @@ class SetupActivity : AppCompatActivity() {
                 .show()
     }
 
+    private fun showSetDateDialog() {
+        val calendar = Calendar.getInstance().apply { time = Date(settings.endDate) }
+        DatePickerDialog(this, { _, year, month, dayOfMonth ->
+                calendar.set(year, month, dayOfMonth)
+                settings.endDate = calendar.timeInMillis
+                adapter?.notifyDataSetChanged()
+        }, calendar[Calendar.YEAR], calendar[Calendar.MONTH], calendar[Calendar.DAY_OF_MONTH])
+                .show()
+
+    }
+
     private object SetupItemType {
         const val TITLE = 100
         const val THE_DATE = 200
@@ -177,6 +190,7 @@ class SetupActivity : AppCompatActivity() {
                     SetupItemType.THE_DATE -> {
                         title.text = getString(R.string.setup_setting_end_date)
                         subtitle.text = DateUtil.formatDate(settings.endDate)
+                        setOnClickListener { showSetDateDialog() }
                     }
                     SetupItemType.EXCLUDE_WEEKENDS -> {
                         title.text = getString(R.string.setup_setting_exclude_weekends)
