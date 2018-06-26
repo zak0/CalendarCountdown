@@ -1,33 +1,33 @@
 package com.gmail.jaaska.jaakko.calendarcountdown.ui
 
-import android.app.DatePickerDialog
 import android.appwidget.AppWidgetManager
 import android.content.ComponentName
 import android.content.Intent
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
+import android.support.v7.widget.DividerItemDecoration
 import android.support.v7.widget.LinearLayoutManager
-import android.text.Editable
-import android.text.TextWatcher
+import android.support.v7.widget.RecyclerView
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
-import android.widget.DatePicker
+import android.view.View
+import android.view.ViewGroup
 import com.gmail.jaaska.jaakko.calendarcountdown.R
 import com.gmail.jaaska.jaakko.calendarcountdown.data.CountdownSettings
 import com.gmail.jaaska.jaakko.calendarcountdown.storage.DatabaseHelper
 import com.gmail.jaaska.jaakko.calendarcountdown.util.DateUtil
 import com.gmail.jaaska.jaakko.calendarcountdown.widget.CountdownAppWidget
 import kotlinx.android.synthetic.main.activity_setup.*
-import java.util.*
+import kotlinx.android.synthetic.main.listitem_setup.view.*
 
 class SetupActivity : AppCompatActivity() {
 
     // This can be lateinit as it should always be in Intent extras
     private lateinit var settings: CountdownSettings
-    private var calendar: Calendar? = null
-
     private var db: DatabaseHelper? = null
+    private var setupItems: ArrayList<Int> = ArrayList()
+    private var adapter: SetupRecyclerViewAdapter? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -44,59 +44,16 @@ class SetupActivity : AppCompatActivity() {
 
         title = "Setup Countdown"
 
-        textViewSetEndDate.setOnClickListener {
-            val cal = Calendar.getInstance()
-            if (settings.endDateIsValid()) cal.time = Date(settings.endDate)
+        setupItems.add(SetupItemType.TITLE)
+        setupItems.add(SetupItemType.THE_DATE)
+        setupItems.add(SetupItemType.EXCLUDED_DAYS)
+        setupItems.add(SetupItemType.EXCLUDE_WEEKENDS)
+        setupItems.add(SetupItemType.USE_ON_WIDGET)
 
-            val dialog = DatePickerDialog(this@SetupActivity, EndDateSetListener(),
-                    cal.get(Calendar.YEAR), cal.get(Calendar.MONTH), cal.get(Calendar.DAY_OF_MONTH))
-            dialog.setTitle("Set countdown end date")
-            dialog.show()
-        }
-
-        editTextLabel.addTextChangedListener(object : TextWatcher {
-            override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {
-
-            }
-
-            override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
-                settings.label = s.toString()
-            }
-
-            override fun afterTextChanged(s: Editable) {
-
-            }
-        })
-
-        checkBoxExcludeWeekends.setOnCheckedChangeListener { _, isChecked ->
-            settings.isExcludeWeekends = isChecked
-            recyclerViewExcludedDays.adapter.notifyDataSetChanged()
-        }
-
-        checkBoxWidget.setOnCheckedChangeListener { _, isChecked -> settings.isUseOnWidget = isChecked }
-
-        buttonAddExcludeRange.setOnClickListener {
-            val dlg = AddExcludedDaysDialog(this@SetupActivity, settings, recyclerViewExcludedDays)
-            dlg.show()
-        }
-
-        val adapter = ExcludedDaysRecyclerViewAdapter(settings.excludedDays)
-        recyclerViewExcludedDays.adapter = adapter
-        recyclerViewExcludedDays.layoutManager = LinearLayoutManager(this)
-
-        setExistingSettingsToViews()
-    }
-
-    /**
-     * Sets the Views to correspond to the existing settings
-     */
-    private fun setExistingSettingsToViews() {
-        // If first time setting up, set calendar to current date
-        // TODO Consider using system default locale instead of Locale.US
-        textViewSetEndDate.text = DateUtil.formatDate(settings.endDate)
-        checkBoxExcludeWeekends.isChecked = settings.isExcludeWeekends
-        checkBoxWidget.isChecked = settings.isUseOnWidget == true
-        editTextLabel.setText(settings.label)
+        adapter = SetupRecyclerViewAdapter()
+        recyclerView.layoutManager = LinearLayoutManager(this)
+        recyclerView.addItemDecoration(DividerItemDecoration(this, DividerItemDecoration.VERTICAL))
+        recyclerView.adapter = adapter
     }
 
     override fun onPause() {
@@ -128,17 +85,6 @@ class SetupActivity : AppCompatActivity() {
         val ids = AppWidgetManager.getInstance(this).getAppWidgetIds(name)
         intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, ids)
         sendBroadcast(intent)
-    }
-
-    private inner class EndDateSetListener : DatePickerDialog.OnDateSetListener {
-        override fun onDateSet(view: DatePicker, year: Int, monthOfYear: Int, dayOfMonth: Int) {
-            calendar = GregorianCalendar(year, monthOfYear, dayOfMonth).also {
-                settings.endDate = it.timeInMillis
-            }
-            //settings.testHook();
-
-            setExistingSettingsToViews()
-        }
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -179,6 +125,62 @@ class SetupActivity : AppCompatActivity() {
 
         return super.onOptionsItemSelected(item)
     }
+
+    private object SetupItemType {
+        const val TITLE = 100
+        const val THE_DATE = 200
+        const val EXCLUDE_WEEKENDS = 300
+        const val EXCLUDED_DAYS = 400
+        const val USE_ON_WIDGET = 500
+    }
+
+    private inner class SetupRecyclerViewAdapter : RecyclerView.Adapter<SetupItemViewHolder>() {
+        override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SetupItemViewHolder {
+            val view = layoutInflater.inflate(R.layout.listitem_setup, parent, false)
+            return SetupItemViewHolder(view)
+        }
+
+        override fun getItemCount(): Int {
+            return setupItems.size
+        }
+
+        override fun onBindViewHolder(holder: SetupItemViewHolder, position: Int) {
+            val item = setupItems[position]
+
+            holder.itemView.apply {
+                when(item) {
+                    SetupItemType.TITLE -> {
+                        title.text = getString(R.string.setup_setting_countdown_title)
+                        subtitle.text = settings.label
+                    }
+                    SetupItemType.THE_DATE -> {
+                        title.text = getString(R.string.setup_setting_end_date)
+                        subtitle.text = DateUtil.formatDate(settings.endDate)
+                    }
+                    SetupItemType.EXCLUDE_WEEKENDS -> {
+                        title.text = getString(R.string.setup_setting_exclude_weekends)
+                        setupCheckbox.visibility = View.VISIBLE
+                        setupCheckbox.isChecked = settings.isExcludeWeekends
+                    }
+                    SetupItemType.EXCLUDED_DAYS -> {
+                        title.text = getString(R.string.setup_setting_excluded_days)
+                    }
+                    SetupItemType.USE_ON_WIDGET -> {
+                        title.text = getString(R.string.setup_setting_use_on_widget)
+                        setupCheckbox.visibility = View.VISIBLE
+                        setupCheckbox.isChecked = settings.isUseOnWidget
+                    }
+                }
+            }
+        }
+
+        override fun getItemViewType(position: Int): Int {
+            return setupItems[position]
+        }
+    }
+
+
+    private inner class SetupItemViewHolder(view: View) : RecyclerView.ViewHolder(view)
 
     companion object {
         private const val TAG = "SetupActivity"

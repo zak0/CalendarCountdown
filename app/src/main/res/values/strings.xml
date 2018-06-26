@@ -3,6 +3,14 @@
     <string name="appwidget_text">EXAMPLE</string>
     <string name="add_widget">Add widget</string>
 
+    <string name="placeholder_word">Lorem</string>
+    <string name="placeholder_sentence">Sed placerat nibh leo, vitae.</string>
+
+    <string name="setup_setting_countdown_title">Countdown title</string>
+    <string name="setup_setting_end_date">Date</string>
+    <string name="setup_setting_exclude_weekends">Exclude weekends</string>
+    <string name="setup_setting_use_on_widget">Use on widget</string>
+    <string name="setup_setting_excluded_days">Exclude days</string>
     <string name="setup_excluded_days_from">From %s</string>
     <string name="setup_excluded_days_to">To %s</string>
     <string name="setup_excluded_days_count">%d days</string>
