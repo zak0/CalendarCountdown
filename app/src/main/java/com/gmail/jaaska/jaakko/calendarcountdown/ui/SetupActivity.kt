@@ -161,6 +161,9 @@ class SetupActivity : AppCompatActivity() {
                         title.text = getString(R.string.setup_setting_exclude_weekends)
                         setupCheckbox.visibility = View.VISIBLE
                         setupCheckbox.isChecked = settings.isExcludeWeekends
+                        setupCheckbox.setOnCheckedChangeListener { _, checked ->
+                            settings.isExcludeWeekends = checked
+                        }
                     }
                     SetupItemType.EXCLUDED_DAYS -> {
                         title.text = getString(R.string.setup_setting_excluded_days)
@@ -169,6 +172,9 @@ class SetupActivity : AppCompatActivity() {
                         title.text = getString(R.string.setup_setting_use_on_widget)
                         setupCheckbox.visibility = View.VISIBLE
                         setupCheckbox.isChecked = settings.isUseOnWidget
+                        setupCheckbox.setOnCheckedChangeListener { _, checked ->
+                            settings.isUseOnWidget = checked
+                        }
                     }
                 }
             }
