@@ -199,6 +199,7 @@ class SetupActivity : AppCompatActivity() {
                         setupCheckbox.setOnCheckedChangeListener { _, checked ->
                             settings.isExcludeWeekends = checked
                         }
+                        setOnClickListener { setupCheckbox.isChecked = !setupCheckbox.isChecked }
                     }
                     SetupItemType.EXCLUDED_DAYS -> {
                         title.text = getString(R.string.setup_setting_excluded_days)
@@ -210,6 +211,7 @@ class SetupActivity : AppCompatActivity() {
                         setupCheckbox.setOnCheckedChangeListener { _, checked ->
                             settings.isUseOnWidget = checked
                         }
+                        setOnClickListener { setupCheckbox.isChecked = !setupCheckbox.isChecked }
                     }
                 }
             }
