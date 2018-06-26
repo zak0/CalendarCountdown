@@ -12,8 +12,14 @@
     <string name="setup_setting_countdown_title">Countdown title</string>
     <string name="setup_setting_end_date">Date</string>
     <string name="setup_setting_exclude_weekends">Exclude weekends</string>
+    <string name="setup_setting_exclude_weekends_subtitle_disabled">Weekend days are included</string>
+    <string name="setup_setting_exclude_weekends_subtitle_enabled">%d weekend days are excluded</string>
     <string name="setup_setting_use_on_widget">Use on widget</string>
+    <string name="setup_setting_use_on_widget_subtitle_disabled">Enable to show this countdown on the widget</string>
+    <string name="setup_setting_use_on_widget_subtitle_enabled">This countdown is shown on the widget</string>
     <string name="setup_setting_excluded_days">Exclude days</string>
+    <string name="setup_setting_excluded_days_subtitle_none">Click to exclude days from countdown</string>
+    <string name="setup_setting_excluded_days_subtitle_set">%d days excluded</string>
     <string name="setup_excluded_days_from">From %s</string>
     <string name="setup_excluded_days_to">To %s</string>
     <string name="setup_excluded_days_count">%d days</string>

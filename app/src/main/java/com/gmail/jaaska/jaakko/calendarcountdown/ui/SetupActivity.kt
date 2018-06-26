@@ -198,11 +198,25 @@ class SetupActivity : AppCompatActivity() {
                         setupCheckbox.isChecked = settings.isExcludeWeekends
                         setupCheckbox.setOnCheckedChangeListener { _, checked ->
                             settings.isExcludeWeekends = checked
+                            adapter?.notifyDataSetChanged()
                         }
                         setOnClickListener { setupCheckbox.isChecked = !setupCheckbox.isChecked }
+                        subtitle.text = if (settings.isExcludeWeekends) {
+                            val now = System.currentTimeMillis()
+                            getString(R.string.setup_setting_exclude_weekends_subtitle_enabled,
+                                    CountdownSettings.weekEndDaysInTimeFrame(now, settings.endDate))
+                        } else {
+                            getString(R.string.setup_setting_exclude_weekends_subtitle_disabled)
+                        }
                     }
                     SetupItemType.EXCLUDED_DAYS -> {
                         title.text = getString(R.string.setup_setting_excluded_days)
+                        subtitle.text = if (settings.excludedDays.isNotEmpty()) {
+                            getString(R.string.setup_setting_excluded_days_subtitle_set,
+                                    settings.getExcludedDaysCount())
+                        } else {
+                            getString(R.string.setup_setting_excluded_days_subtitle_none)
+                        }
                     }
                     SetupItemType.USE_ON_WIDGET -> {
                         title.text = getString(R.string.setup_setting_use_on_widget)
@@ -210,8 +224,14 @@ class SetupActivity : AppCompatActivity() {
                         setupCheckbox.isChecked = settings.isUseOnWidget
                         setupCheckbox.setOnCheckedChangeListener { _, checked ->
                             settings.isUseOnWidget = checked
+                            adapter?.notifyDataSetChanged()
                         }
                         setOnClickListener { setupCheckbox.isChecked = !setupCheckbox.isChecked }
+                        subtitle.text = if (settings.isUseOnWidget) {
+                            getString(R.string.setup_setting_use_on_widget_subtitle_enabled)
+                        } else {
+                            getString(R.string.setup_setting_use_on_widget_subtitle_disabled)
+                        }
                     }
                 }
             }
