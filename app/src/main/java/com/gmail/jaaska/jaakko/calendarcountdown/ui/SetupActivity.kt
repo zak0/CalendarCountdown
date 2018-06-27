@@ -224,6 +224,7 @@ class SetupActivity : AppCompatActivity() {
                         }
                         setOnClickListener {
                             val intent = Intent(this@SetupActivity, ManageExcludedDaysActivity::class.java)
+                            intent.putExtra(CountdownSettings.extraName, settings)
                             startActivity(intent)
                         }
                     }
