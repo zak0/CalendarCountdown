@@ -9,6 +9,7 @@ import android.view.View
 import android.view.ViewGroup
 import com.gmail.jaaska.jaakko.calendarcountdown.R
 import com.gmail.jaaska.jaakko.calendarcountdown.data.CountdownSettings
+import com.gmail.jaaska.jaakko.calendarcountdown.storage.DatabaseHelper
 import com.gmail.jaaska.jaakko.calendarcountdown.util.DateUtil
 import kotlinx.android.synthetic.main.activity_manage_excluded_days.*
 import kotlinx.android.synthetic.main.listitem_excluded_days.view.*
@@ -34,6 +35,16 @@ class ManageExcludedDaysActivity : AppCompatActivity() {
             AddExcludedDaysDialog(this@ManageExcludedDaysActivity,
                     settings, recyclerViewExcludedDays).show()
         }
+    }
+
+    override fun onStop() {
+        // Save the excluded days to DB
+        DatabaseHelper(this, DatabaseHelper.DB_NAME, DatabaseHelper.DB_VERSION).apply {
+            openDb()
+            saveCountdownToDB(settings)
+            closeDb()
+        }
+        super.onStop()
     }
 
     private inner class ExcludedDaysRecyclerViewAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
