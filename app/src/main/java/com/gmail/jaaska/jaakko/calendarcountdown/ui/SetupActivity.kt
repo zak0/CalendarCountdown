@@ -222,6 +222,10 @@ class SetupActivity : AppCompatActivity() {
                         } else {
                             getString(R.string.setup_setting_excluded_days_subtitle_none)
                         }
+                        setOnClickListener {
+                            val intent = Intent(this@SetupActivity, ManageExcludedDaysActivity::class.java)
+                            startActivity(intent)
+                        }
                     }
                     SetupItemType.USE_ON_WIDGET -> {
                         title.text = getString(R.string.setup_setting_use_on_widget)
