@@ -5,6 +5,7 @@ import android.appwidget.AppWidgetManager
 import android.content.ComponentName
 import android.content.Intent
 import android.os.Bundle
+import android.os.Handler
 import android.support.v7.app.AlertDialog
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.DividerItemDecoration
@@ -200,7 +201,11 @@ class SetupActivity : AppCompatActivity() {
                             settings.isExcludeWeekends = checked
                             adapter?.notifyDataSetChanged()
                         }
-                        setOnClickListener { setupCheckbox.isChecked = !setupCheckbox.isChecked }
+                        setOnClickListener {
+                            Handler().postDelayed({
+                                setupCheckbox.isChecked = !setupCheckbox.isChecked
+                            }, 300)
+                        }
                         subtitle.text = if (settings.isExcludeWeekends) {
                             val now = System.currentTimeMillis()
                             getString(R.string.setup_setting_exclude_weekends_subtitle_enabled,
@@ -226,7 +231,11 @@ class SetupActivity : AppCompatActivity() {
                             settings.isUseOnWidget = checked
                             adapter?.notifyDataSetChanged()
                         }
-                        setOnClickListener { setupCheckbox.isChecked = !setupCheckbox.isChecked }
+                        setOnClickListener {
+                            Handler().postDelayed({
+                                setupCheckbox.isChecked = !setupCheckbox.isChecked
+                            }, 300)
+                        }
                         subtitle.text = if (settings.isUseOnWidget) {
                             getString(R.string.setup_setting_use_on_widget_subtitle_enabled)
                         } else {
