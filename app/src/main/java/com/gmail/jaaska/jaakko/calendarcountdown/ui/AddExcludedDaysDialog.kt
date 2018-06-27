@@ -3,7 +3,6 @@ package com.gmail.jaaska.jaakko.calendarcountdown.ui
 import android.app.DatePickerDialog
 import android.app.Dialog
 import android.content.Context
-import android.support.v7.widget.RecyclerView
 import android.util.Log
 import android.view.View
 import android.widget.Button
@@ -18,7 +17,9 @@ import java.util.*
 /**
  * Created by jaakko on 24.6.2018.
  */
-class AddExcludedDaysDialog(context: Context, private val settings: CountdownSettings, private val recyclerView: RecyclerView) : Dialog(context) {
+class AddExcludedDaysDialog(context: Context,
+                            private val settings: CountdownSettings,
+                            private val onExcludedDaysAdded: () -> Unit) : Dialog(context) {
 
     private val contentView: View
     private var dateFrom: Long = 0
@@ -30,7 +31,7 @@ class AddExcludedDaysDialog(context: Context, private val settings: CountdownSet
         dateFrom = -1
         dateTo = -1
 
-        contentView = layoutInflater.inflate(R.layout.dialog_excluded_days, null)
+        contentView = View.inflate(context, R.layout.dialog_excluded_days, null)
         setContentView(contentView)
 
         contentView.textViewExclDateDlgFrom.setOnClickListener {
@@ -63,7 +64,7 @@ class AddExcludedDaysDialog(context: Context, private val settings: CountdownSet
             Log.d(TAG, "addRange() - adding a new range")
             val range = ExcludedDays(settings, dateFrom, dateTo)
             settings.addExcludedDays(range)
-            recyclerView.adapter.notifyDataSetChanged()
+            onExcludedDaysAdded()
             dismiss()
         }
     }

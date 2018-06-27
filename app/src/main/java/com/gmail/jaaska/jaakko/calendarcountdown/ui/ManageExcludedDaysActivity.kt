@@ -32,9 +32,17 @@ class ManageExcludedDaysActivity : AppCompatActivity() {
         recyclerViewExcludedDays.adapter = adapter
 
         floatingActionButtonAddExcludedDays.setOnClickListener {
-            AddExcludedDaysDialog(this@ManageExcludedDaysActivity,
-                    settings, recyclerViewExcludedDays).show()
+            AddExcludedDaysDialog(this@ManageExcludedDaysActivity, settings) {
+                adapter?.notifyDataSetChanged()
+                refreshTotalExcludedDaysCount()
+            }.show()
         }
+
+        refreshTotalExcludedDaysCount()
+    }
+
+    private fun refreshTotalExcludedDaysCount() {
+        textViewCount.text = settings.getExcludedDaysCount().toString()
     }
 
     override fun onStop() {
