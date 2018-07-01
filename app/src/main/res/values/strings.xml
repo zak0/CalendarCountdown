@@ -6,6 +6,8 @@
     <string name="common_done">Done</string>
     <string name="common_cancel">Cancel</string>
 
+    <string name="placeholder_number">12</string>
+    <string name="placeholder_date">22.8.2018</string>
     <string name="placeholder_word">Lorem</string>
     <string name="placeholder_sentence">Sed placerat nibh leo, vitae.</string>
 
