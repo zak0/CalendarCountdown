@@ -1,6 +1,7 @@
 package com.gmail.jaaska.jaakko.calendarcountdown.ui
 
 import android.os.Bundle
+import android.support.v7.app.AlertDialog
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.DividerItemDecoration
 import android.support.v7.widget.LinearLayoutManager
@@ -80,10 +81,20 @@ class ManageExcludedDaysActivity : AppCompatActivity() {
                 holder.itemView.textViewExclDaysCount.text = item.daysCount.toString()
             }
 
-            holder.itemView.setOnLongClickListener {
-                // TODO: Notify user somehow (refresh the RecyclerView or atleast throw a Toast??)
-                settings.excludedDays.remove(item)
-                true
+            holder.itemView.buttonDelete.setOnClickListener {
+                // Confirm deletion with a dialog first.
+                AlertDialog.Builder(this@ManageExcludedDaysActivity)
+                        .setTitle(R.string.excluded_days_manager_confirm_delete_title)
+                        .setMessage(getString(R.string.excluded_days_manager_confirm_delete_message,
+                                item.daysCount,
+                                fromString,
+                                toString))
+                        .setPositiveButton(R.string.common_yes) { _, _ ->
+                            settings.excludedDays.remove(item)
+                            adapter?.notifyDataSetChanged()
+                            refreshTotalExcludedDaysCount()}
+                        .setNegativeButton(R.string.common_no) { _, _ -> }
+                        .show()
             }
         }
 

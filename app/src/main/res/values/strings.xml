@@ -5,6 +5,8 @@
 
     <string name="common_done">Done</string>
     <string name="common_cancel">Cancel</string>
+    <string name="common_yes">Yes</string>
+    <string name="common_no">No</string>
 
     <string name="placeholder_number">12</string>
     <string name="placeholder_date">22.8.2018</string>
@@ -31,5 +33,7 @@
     <string name="excluded_days_manager_from_title">from</string>
     <string name="excluded_days_manager_to_title">to</string>
     <string name="excluded_days_manager_days_excluded">days excluded</string>
+    <string name="excluded_days_manager_confirm_delete_title">Are you sure?</string>
+    <string name="excluded_days_manager_confirm_delete_message">Really want to delete %d excluded days from %s to %s?</string>
 
 </resources>
