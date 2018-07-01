@@ -2,6 +2,7 @@ package com.gmail.jaaska.jaakko.calendarcountdown.ui
 
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
+import android.support.v7.widget.DividerItemDecoration
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
@@ -29,6 +30,8 @@ class ManageExcludedDaysActivity : AppCompatActivity() {
 
         adapter = ExcludedDaysRecyclerViewAdapter()
         recyclerViewExcludedDays.layoutManager = LinearLayoutManager(this)
+        recyclerViewExcludedDays.addItemDecoration(DividerItemDecoration(this,
+                DividerItemDecoration.VERTICAL))
         recyclerViewExcludedDays.adapter = adapter
 
         floatingActionButtonAddExcludedDays.setOnClickListener {
@@ -72,9 +75,9 @@ class ManageExcludedDaysActivity : AppCompatActivity() {
             val toString = DateUtil.formatDate(to)
 
             holder.itemView.context.apply {
-                holder.itemView.textViewExclDateFrom.text = getString(R.string.setup_excluded_days_from, fromString)
-                holder.itemView.textViewExclDateTo.text = getString(R.string.setup_excluded_days_to, toString)
-                holder.itemView.textViewExclDaysCount.text = getString(R.string.setup_excluded_days_count, item.daysCount)
+                holder.itemView.textViewExclDateFrom.text = fromString
+                holder.itemView.textViewExclDateTo.text = toString
+                holder.itemView.textViewExclDaysCount.text = item.daysCount.toString()
             }
 
             holder.itemView.setOnLongClickListener {

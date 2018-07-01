@@ -25,4 +25,9 @@
     <string name="setup_excluded_days_count">%d days</string>
     <string name="setup_dialog_title_title">What happens at that date?</string>
     <string name="setup_dialog_title_hint">Something very awesome!</string>
+
+    <string name="excluded_days_manager_from_title">from</string>
+    <string name="excluded_days_manager_to_title">to</string>
+    <string name="excluded_days_manager_days_excluded">days excluded</string>
+
 </resources>
