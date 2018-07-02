@@ -36,4 +36,10 @@
     <string name="excluded_days_manager_confirm_delete_title">Are you sure?</string>
     <string name="excluded_days_manager_confirm_delete_message">Really want to delete %d excluded days from %s to %s?</string>
 
+    <string name="add_excluded_days_dialog_title">Exclude days</string>
+    <string name="add_excluded_days_dialog_from_title">From</string>
+    <string name="add_excluded_days_dialog_to_title">To</string>
+    <string name="add_excluded_days_dialog_tap_to_set">Tap to set</string>
+    <string name="add_excluded_days_dialog_add_button">Exclude day range</string>
+
 </resources>

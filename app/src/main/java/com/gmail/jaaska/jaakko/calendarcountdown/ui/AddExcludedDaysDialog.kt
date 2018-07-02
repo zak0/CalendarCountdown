@@ -1,11 +1,10 @@
 package com.gmail.jaaska.jaakko.calendarcountdown.ui
 
+import android.app.AlertDialog
 import android.app.DatePickerDialog
-import android.app.Dialog
 import android.content.Context
 import android.util.Log
 import android.view.View
-import android.widget.Button
 import android.widget.DatePicker
 import com.gmail.jaaska.jaakko.calendarcountdown.R
 import com.gmail.jaaska.jaakko.calendarcountdown.data.CountdownSettings
@@ -17,43 +16,44 @@ import java.util.*
 /**
  * Created by jaakko on 24.6.2018.
  */
-class AddExcludedDaysDialog(context: Context,
+class AddExcludedDaysDialog(private val context: Context,
                             private val settings: CountdownSettings,
-                            private val onExcludedDaysAdded: () -> Unit) : Dialog(context) {
+                            private val onExcludedDaysAdded: () -> Unit) {
 
     private val contentView: View
     private var dateFrom: Long = 0
     private var dateTo: Long = 0
+    private val dialog: AlertDialog.Builder = AlertDialog.Builder(context)
 
     init {
-
         // Set dates negative to indicate that they're not yet set.
         dateFrom = -1
         dateTo = -1
 
         contentView = View.inflate(context, R.layout.dialog_excluded_days, null)
-        setContentView(contentView)
 
-        contentView.textViewExclDateDlgFrom.setOnClickListener {
+        dialog
+                .setTitle(R.string.add_excluded_days_dialog_title)
+                .setView(contentView)
+                .setPositiveButton(R.string.add_excluded_days_dialog_add_button) { _, _ -> addRange() }
+                .setNegativeButton(R.string.common_cancel) { _, _ -> }
+
+        contentView.fromCard.setOnClickListener {
             val cal = Calendar.getInstance()
-            val dlg = DatePickerDialog(getContext(), DateSetListener(0), cal.get(Calendar.YEAR), cal.get(Calendar.MONTH), cal.get(Calendar.DAY_OF_MONTH))
+            val dlg = DatePickerDialog(context, DateSetListener(0),
+                    cal.get(Calendar.YEAR), cal.get(Calendar.MONTH), cal.get(Calendar.DAY_OF_MONTH))
             dlg.show()
         }
 
-        contentView.textViewExclDateDlgTo.setOnClickListener {
+        contentView.toCard.setOnClickListener {
             val cal = Calendar.getInstance()
-            val dlg = DatePickerDialog(getContext(), DateSetListener(1), cal.get(Calendar.YEAR), cal.get(Calendar.MONTH), cal.get(Calendar.DAY_OF_MONTH))
+            val dlg = DatePickerDialog(context, DateSetListener(1),
+                    cal.get(Calendar.YEAR), cal.get(Calendar.MONTH), cal.get(Calendar.DAY_OF_MONTH))
             dlg.show()
         }
+    }
 
-        val buttonAdd = findViewById<View>(R.id.buttonExclDateDlgAdd) as Button
-        buttonAdd.setOnClickListener { addRange() }
-
-        val buttonCancel = findViewById<View>(R.id.buttonExclDateDlgCancel) as Button
-        buttonCancel.setOnClickListener { dismiss() }
-
-
-    }// recyclerView is used to refresh the RecyclerView displaying the excluded ranges on SetupActivity.
+    fun show() { dialog.show() }
 
     /**
      * Adds set exclusion range into settings.
@@ -65,10 +65,8 @@ class AddExcludedDaysDialog(context: Context,
             val range = ExcludedDays(settings, dateFrom, dateTo)
             settings.addExcludedDays(range)
             onExcludedDaysAdded()
-            dismiss()
         }
     }
-
 
     /**
      * Refreshes date views after date is set in a DatePickerDialog.
@@ -77,12 +75,12 @@ class AddExcludedDaysDialog(context: Context,
     private fun refreshViews() {
         if (dateFrom > 0) {
             val dateString = DateUtil.formatDate(dateFrom)
-            contentView.textViewExclDateDlgFrom.text = context.getString(R.string.setup_excluded_days_from, dateString)
+            contentView.fromSubtitle.text = dateString
         }
 
         if (dateTo > 0) {
             val dateString = DateUtil.formatDate(dateTo)
-            contentView.textViewExclDateDlgTo.text = context.getString(R.string.setup_excluded_days_to, dateString)
+            contentView.toSubtitle.text = dateString
         }
     }
 
