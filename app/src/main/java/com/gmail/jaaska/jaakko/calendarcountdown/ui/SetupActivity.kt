@@ -69,10 +69,6 @@ class SetupActivity : AppCompatActivity() {
         updateWidgets()
     }
 
-    override fun onStop() {
-        Log.d(TAG, "onStop() - called")
-        super.onStop()
-    }
 
     /**
      * Checks data entered by the user.
@@ -103,15 +99,20 @@ class SetupActivity : AppCompatActivity() {
 
         when (id) {
             R.id.menuitem_setup_delete -> {
-                db?.apply {
-                    openDb()
-                    deleteCountdown(settings)
-                    closeDb()
-                }
-
-                // Point settings to new CountdownSettings so that input data validation fails and it is not saved to database.
-                settings = CountdownSettings()
-                finish()
+                // Confirm delete first
+                AlertDialog.Builder(this)
+                        .setTitle(R.string.setup_dialog_confirm_delete_title)
+                        .setMessage(R.string.setup_dialog_confirm_delete_message)
+                        .setPositiveButton(R.string.common_yes) { _, _ ->
+                            db?.apply {
+                                openDb()
+                                deleteCountdown(settings)
+                                closeDb()
+                            }
+                            finish()
+                        }
+                        .setNegativeButton(R.string.common_no, null)
+                        .show()
             }
             R.id.menuitem_setup_done -> {
                 // Save settings to DB
@@ -123,8 +124,6 @@ class SetupActivity : AppCompatActivity() {
                         closeDb()
                     }
                 }
-
-                // Then finish() this activity.
                 finish()
             }
         }
@@ -153,9 +152,9 @@ class SetupActivity : AppCompatActivity() {
     private fun showSetDateDialog() {
         val calendar = Calendar.getInstance().apply { time = Date(settings.endDate) }
         DatePickerDialog(this, { _, year, month, dayOfMonth ->
-                calendar.set(year, month, dayOfMonth)
-                settings.endDate = calendar.timeInMillis
-                adapter?.notifyDataSetChanged()
+            calendar.set(year, month, dayOfMonth)
+            settings.endDate = calendar.timeInMillis
+            adapter?.notifyDataSetChanged()
         }, calendar[Calendar.YEAR], calendar[Calendar.MONTH], calendar[Calendar.DAY_OF_MONTH])
                 .show()
 
@@ -183,7 +182,7 @@ class SetupActivity : AppCompatActivity() {
             val item = setupItems[position]
 
             holder.itemView.apply {
-                when(item) {
+                when (item) {
                     SetupItemType.TITLE -> {
                         title.text = getString(R.string.setup_setting_countdown_title)
                         subtitle.text = settings.label
@@ -265,7 +264,6 @@ class SetupActivity : AppCompatActivity() {
             adapter?.notifyDataSetChanged()
         }
     }
-
 
     private inner class SetupItemViewHolder(view: View) : RecyclerView.ViewHolder(view)
 

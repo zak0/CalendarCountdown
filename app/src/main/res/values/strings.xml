@@ -31,6 +31,8 @@
     <string name="setup_excluded_days_count">%d days</string>
     <string name="setup_dialog_title_title">What happens at that date?</string>
     <string name="setup_dialog_title_hint">Something very awesome!</string>
+    <string name="setup_dialog_confirm_delete_title">Are you sure you want to delete this countdown?</string>
+    <string name="setup_dialog_confirm_delete_message">Deletion cannot be undone.</string>
 
     <string name="excluded_days_manager_from_title">from</string>
     <string name="excluded_days_manager_to_title">to</string>
