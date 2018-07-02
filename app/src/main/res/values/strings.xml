@@ -33,6 +33,11 @@
     <string name="setup_dialog_title_hint">Something very awesome!</string>
     <string name="setup_dialog_confirm_delete_title">Are you sure you want to delete this countdown?</string>
     <string name="setup_dialog_confirm_delete_message">Deletion cannot be undone.</string>
+    <string name="setup_dialog_unsaved_changes_title">You have unsaved changes</string>
+    <string name="setup_dialog_unsaved_changes_message">These changes will be lost if you go back without saving.</string>
+    <string name="setup_dialog_unsaved_changes_positive">Save changes</string>
+    <string name="setup_dialog_unsaved_changes_negative">Go back without saving</string>
+    <string name="setup_dialog_unsaved_changes_neutral">Keep editing</string>
 
     <string name="excluded_days_manager_from_title">from</string>
     <string name="excluded_days_manager_to_title">to</string>

@@ -41,8 +41,7 @@ class SetupActivity : AppCompatActivity() {
 
         db = DatabaseHelper(this, DatabaseHelper.DB_NAME, DatabaseHelper.DB_VERSION)
 
-        // Hide up (or back) action to action bar
-        supportActionBar?.setDisplayHomeAsUpEnabled(false)
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
         // Read settings from Intent
         val intent = intent
@@ -69,6 +68,32 @@ class SetupActivity : AppCompatActivity() {
         updateWidgets()
     }
 
+    override fun onBackPressed() {
+        if (unsavedChangesExist()) {
+            AlertDialog.Builder(this)
+                    .setTitle(R.string.setup_dialog_unsaved_changes_title)
+                    .setMessage(R.string.setup_dialog_unsaved_changes_message)
+                    .setPositiveButton(R.string.setup_dialog_unsaved_changes_positive) { _, _ -> saveAndFinish() }
+                    .setNegativeButton(R.string.setup_dialog_unsaved_changes_negative) { _, _ -> finish() }
+                    .setNeutralButton(R.string.setup_dialog_unsaved_changes_neutral, null) // just dismiss()
+                    .show()
+        } else {
+            finish()
+        }
+    }
+
+    private fun saveAndFinish() {
+        // Save settings to DB
+        db?.apply {
+            if (validateInputs()) {
+                // ... but only if entered data is OK.
+                openDb()
+                saveCountdownToDB(settings)
+                closeDb()
+            }
+        }
+        finish()
+    }
 
     /**
      * Checks data entered by the user.
@@ -97,7 +122,12 @@ class SetupActivity : AppCompatActivity() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         val id = item.itemId
 
-        when (id) {
+        return when (id) {
+            android.R.id.home -> {
+                onBackPressed()
+                true
+            }
+
             R.id.menuitem_setup_delete -> {
                 // Confirm delete first
                 AlertDialog.Builder(this)
@@ -113,22 +143,42 @@ class SetupActivity : AppCompatActivity() {
                         }
                         .setNegativeButton(R.string.common_no, null)
                         .show()
+
+                true
             }
+
             R.id.menuitem_setup_done -> {
-                // Save settings to DB
-                db?.apply {
-                    if (validateInputs()) {
-                        // But only if entered data is OK.
-                        openDb()
-                        saveCountdownToDB(settings)
-                        closeDb()
-                    }
-                }
-                finish()
+                saveAndFinish()
+                true
             }
+
+            else -> super.onOptionsItemSelected(item)
+        }
+    }
+
+    /**
+     * Checks if there are unsaved changed made to this countdown.
+     */
+    private fun unsavedChangesExist(): Boolean {
+        // If ID of the countdown is less than 0, it means that this is a new countdown. Then everything
+        // is a change...
+        if (settings.dbId < 0) {
+            return true
         }
 
-        return super.onOptionsItemSelected(item)
+        // Otherwise we get the countdown from DB, and compare fields for changes.
+        db?.apply {
+            openDb()
+            loadSetting(settings.dbId)?.apply {
+                return settings.label != label ||
+                        settings.isUseOnWidget != isUseOnWidget ||
+                        settings.isExcludeWeekends != isExcludeWeekends ||
+                        settings.endDate != endDate ||
+                        settings.getExcludedDaysCount() != getExcludedDaysCount()
+            }
+            closeDb()
+        }
+        return false
     }
 
     private fun showSetTitleDialog() {
