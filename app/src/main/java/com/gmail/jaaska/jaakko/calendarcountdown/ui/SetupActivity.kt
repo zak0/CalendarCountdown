@@ -1,5 +1,6 @@
 package com.gmail.jaaska.jaakko.calendarcountdown.ui
 
+import android.app.Activity
 import android.app.DatePickerDialog
 import android.appwidget.AppWidgetManager
 import android.content.ComponentName
@@ -225,7 +226,7 @@ class SetupActivity : AppCompatActivity() {
                         setOnClickListener {
                             val intent = Intent(this@SetupActivity, ManageExcludedDaysActivity::class.java)
                             intent.putExtra(CountdownSettings.extraName, settings)
-                            startActivity(intent)
+                            startActivityForResult(intent, ManageExcludedDaysActivity.REQUEST_CODE_MANAGE_EXCLUDED_DAYS)
                         }
                     }
                     SetupItemType.USE_ON_WIDGET -> {
@@ -253,6 +254,15 @@ class SetupActivity : AppCompatActivity() {
 
         override fun getItemViewType(position: Int): Int {
             return setupItems[position]
+        }
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        if (requestCode == ManageExcludedDaysActivity.REQUEST_CODE_MANAGE_EXCLUDED_DAYS &&
+                resultCode == Activity.RESULT_OK) {
+            // We MUST have CountdownSettings as the data intent!
+            settings = data!!.getSerializableExtra(CountdownSettings.extraName) as CountdownSettings
+            adapter?.notifyDataSetChanged()
         }
     }
 
