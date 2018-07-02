@@ -23,7 +23,7 @@ class AddExcludedDaysDialog(private val context: Context,
     private val contentView: View
     private var dateFrom: Long = 0
     private var dateTo: Long = 0
-    private val dialog: AlertDialog.Builder = AlertDialog.Builder(context)
+    private var dialog: AlertDialog? = null
 
     init {
         // Set dates negative to indicate that they're not yet set.
@@ -32,11 +32,20 @@ class AddExcludedDaysDialog(private val context: Context,
 
         contentView = View.inflate(context, R.layout.dialog_excluded_days, null)
 
-        dialog
-                .setTitle(R.string.add_excluded_days_dialog_title)
-                .setView(contentView)
-                .setPositiveButton(R.string.add_excluded_days_dialog_add_button) { _, _ -> addRange() }
-                .setNegativeButton(R.string.common_cancel) { _, _ -> }
+        dialog = AlertDialog.Builder(context).apply {
+            setTitle(R.string.add_excluded_days_dialog_title)
+            setView(contentView)
+            setPositiveButton(R.string.add_excluded_days_dialog_add_button, null)
+            setNegativeButton(R.string.common_cancel) { _, _ -> }
+        }.create()
+
+        // Custom OnClickListener is needed to make the dialog not dismiss when user tries to add
+        // excluded days and to/from date is missing.
+        dialog?.setOnShowListener {
+            dialog?.getButton(AlertDialog.BUTTON_POSITIVE)?.apply {
+                setOnClickListener { addRange() }
+            }
+        }
 
         contentView.fromCard.setOnClickListener {
             val cal = Calendar.getInstance()
@@ -53,7 +62,9 @@ class AddExcludedDaysDialog(private val context: Context,
         }
     }
 
-    fun show() { dialog.show() }
+    fun show() {
+        dialog?.show()
+    }
 
     /**
      * Adds set exclusion range into settings.
@@ -65,6 +76,14 @@ class AddExcludedDaysDialog(private val context: Context,
             val range = ExcludedDays(settings, dateFrom, dateTo)
             settings.addExcludedDays(range)
             onExcludedDaysAdded()
+            dialog?.dismiss()
+        } else {
+            // Dates weren't valid...
+            AlertDialog.Builder(context)
+                    .setTitle(R.string.common_oops)
+                    .setMessage(R.string.add_excluded_days_dialog_days_not_set_alert_message)
+                    .setPositiveButton(R.string.common_okay) { _, _ -> }
+                    .show()
         }
     }
 

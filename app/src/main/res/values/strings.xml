@@ -7,6 +7,8 @@
     <string name="common_cancel">Cancel</string>
     <string name="common_yes">Yes</string>
     <string name="common_no">No</string>
+    <string name="common_oops">Oops...</string>
+    <string name="common_okay">Okay</string>
 
     <string name="placeholder_number">12</string>
     <string name="placeholder_date">22.8.2018</string>
@@ -41,5 +43,6 @@
     <string name="add_excluded_days_dialog_to_title">To</string>
     <string name="add_excluded_days_dialog_tap_to_set">Tap to set</string>
     <string name="add_excluded_days_dialog_add_button">Exclude day range</string>
+    <string name="add_excluded_days_dialog_days_not_set_alert_message">Make sure you add both dates before adding excluded days.</string>
 
 </resources>
