@@ -15,6 +15,8 @@
     <string name="placeholder_word">Lorem</string>
     <string name="placeholder_sentence">Sed placerat nibh leo, vitae.</string>
 
+    <string name="countdowns_list_days_until">days until</string>
+
     <string name="setup_setting_countdown_title">Countdown title</string>
     <string name="setup_setting_end_date">Date</string>
     <string name="setup_setting_exclude_weekends">Exclude weekends</string>
