@@ -1,60 +1,55 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:card_view="http://schemas.android.com/apk/res-auto"
-    android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:padding="0dp">
+    android:elevation="2dp"
+    android:orientation="vertical"
+    card_view:cardUseCompatPadding="true">
 
-    <android.support.v7.widget.CardView
+    <android.support.constraint.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:elevation="2dp"
-        card_view:cardUseCompatPadding="true">
+        android:padding="@dimen/countdown_card_padding">
 
-        <RelativeLayout
-            android:layout_width="match_parent"
+        <TextView
+            android:id="@+id/textViewCountdownDaysToGo"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:padding="@dimen/countdown_card_padding">
+            android:layout_marginEnd="10dp"
+            android:text="@string/placeholder_number"
+            android:textColor="@color/colorBlack"
+            android:textSize="@dimen/text_display2" />
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/textViewCountdownDaysToGo"
-                android:textSize="@dimen/text_display2"
-                android:layout_marginRight="10dp"
-                android:textColor="@color/colorBlack"/>
+        <TextView
+            android:id="@+id/textViewCountdownDaysToGoLabel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingTop="10dp"
+            android:text="@string/countdowns_list_days_until"
+            android:textSize="@dimen/text_body"
+            card_view:layout_constraintStart_toEndOf="@id/textViewCountdownDaysToGo" />
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textSize="@dimen/text_body"
-                android:paddingTop="10dp"
-                android:layout_toRightOf="@id/textViewCountdownDaysToGo"
-                android:id="@+id/textViewCountdownDaysToGoLabel"
-                android:text="days until"/>
+        <TextView
+            android:id="@+id/textViewCountdownLabel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/placeholder_sentence"
+            android:textColor="@color/colorBlack"
+            android:textSize="@dimen/text_body"
+            card_view:layout_constraintStart_toEndOf="@id/textViewCountdownDaysToGo"
+            card_view:layout_constraintTop_toBottomOf="@id/textViewCountdownDaysToGoLabel" />
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_toRightOf="@id/textViewCountdownDaysToGo"
-                android:layout_below="@id/textViewCountdownDaysToGoLabel"
-                android:id="@+id/textViewCountdownLabel"
-                android:textColor="@color/colorBlack"
-                android:textSize="@dimen/text_body"/>
+        <TextView
+            android:id="@+id/textViewCountdownEndDate"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/textViewCountdownLabel"
+            android:text="@string/placeholder_date"
+            android:textSize="@dimen/text_body"
+            card_view:layout_constraintBottom_toBottomOf="parent"
+            card_view:layout_constraintEnd_toEndOf="parent" />
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentRight="true"
-                android:layout_below="@id/textViewCountdownLabel"
-                android:id="@+id/textViewCountdownEndDate"
-                android:textSize="@dimen/text_body"/>
+    </android.support.constraint.ConstraintLayout>
 
-
-        </RelativeLayout>
-
-
-    </android.support.v7.widget.CardView>
-
-</LinearLayout>
+</android.support.v7.widget.CardView>
