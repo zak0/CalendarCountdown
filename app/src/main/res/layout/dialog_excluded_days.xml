@@ -1,36 +1,94 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent">
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:card_view="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="16dp">
 
-    <TextView
-        android:layout_width="wrap_content"
+    <android.support.v7.widget.CardView
+        android:id="@+id/fromCard"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:textSize="@dimen/text_large"
-        android:textColor="@color/colorBlack"
-        android:layout_marginBottom="10dp"
-        android:id="@+id/textViewExclDateDlgFrom"
-        android:text="Tap to set FROM date."/>
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:elevation="@dimen/cardview_default_elevation"
+        android:foreground="?attr/selectableItemBackground"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        card_view:cardUseCompatPadding="true">
 
-    <TextView
-        android:layout_width="wrap_content"
+        <android.support.constraint.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="16dp">
+
+            <TextView
+                android:id="@+id/fromTitle"
+                style="@style/AppTheme.Text.Bold"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/add_excluded_days_dialog_from_title" />
+
+            <TextView
+                android:id="@+id/fromSubtitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:text="@string/add_excluded_days_dialog_tap_to_set"
+                app:layout_constraintTop_toBottomOf="@id/fromTitle" />
+
+        </android.support.constraint.ConstraintLayout>
+
+    </android.support.v7.widget.CardView>
+
+    <android.support.v7.widget.CardView
+        android:id="@+id/toCard"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:textSize="@dimen/text_large"
-        android:layout_marginBottom="10dp"
-        android:textColor="@color/colorBlack"
-        android:id="@+id/textViewExclDateDlgTo"
-        android:text="Tap to set TO date."/>
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:elevation="@dimen/cardview_default_elevation"
+        android:foreground="?attr/selectableItemBackground"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/fromCard"
+        card_view:cardUseCompatPadding="true">
 
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Add"
-        android:id="@+id/buttonExclDateDlgAdd"/>
+        <android.support.constraint.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="16dp">
 
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Cancel"
-        android:id="@+id/buttonExclDateDlgCancel"/>
+            <TextView
+                android:id="@+id/toTitle"
+                style="@style/AppTheme.Text.Bold"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/add_excluded_days_dialog_to_title" />
 
-</LinearLayout>
+            <TextView
+                android:id="@+id/toSubtitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:text="@string/add_excluded_days_dialog_tap_to_set"
+                app:layout_constraintTop_toBottomOf="@id/toTitle" />
+
+        </android.support.constraint.ConstraintLayout>
+
+    </android.support.v7.widget.CardView>
+
+    <!-- This View is here to artificially make the layout taller than it
+    actually is. Without that, the bottom shadow of "toCard" would get clipped off.
+    -->
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="16dp"
+        android:background="@android:color/transparent"
+        app:layout_constraintTop_toBottomOf="@id/toCard" />
+
+</android.support.constraint.ConstraintLayout>

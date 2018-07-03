@@ -150,6 +150,35 @@ class DatabaseHelper(context: Context,
     }
 
     /**
+     * Loads countdown with specific ID from the database.
+     * Returns null if nothing is found.
+     */
+    fun loadSetting(id: Int): CountdownSettings? {
+        val sql = "select * from $TBLCOUNTDOWN where $COLCOUNTDOWNID = $id"
+        var countdown: CountdownSettings? = null
+
+        db?.also { db ->
+            val cur = db.rawQuery(sql, null)
+            cur.moveToFirst()
+
+            if (!cur.isAfterLast) {
+                countdown = cursorToCountdown(cur)
+
+                // Load excluded date ranges for countdown
+                countdown?.also {
+                    loadExcludedDaysForCountdown(it)
+                }
+
+                cur.moveToNext()
+            }
+        }
+
+        Log.d(TAG, "loadSetting() - loaded countdown with title '${countdown?.label ?: "null"}' from DB")
+
+        return countdown
+    }
+
+    /**
      * Reads and returns settings from database.
      */
     fun loadSettings(): List<CountdownSettings> {

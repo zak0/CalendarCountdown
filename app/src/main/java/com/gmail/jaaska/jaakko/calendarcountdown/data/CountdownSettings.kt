@@ -79,7 +79,7 @@ class CountdownSettings : Serializable, Comparable<CountdownSettings> {
         return endDate > 0
     }
 
-    private fun getExcludedDaysCount(): Int {
+    fun getExcludedDaysCount(): Int {
         var sum = 0
 
         for (i in excludedDays.indices) {

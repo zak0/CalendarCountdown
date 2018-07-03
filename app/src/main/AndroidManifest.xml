@@ -11,13 +11,14 @@
         <activity android:name=".ui.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
         <activity
             android:name=".ui.SetupActivity"
             android:parentActivityName=".ui.MainActivity" />
+        <activity
+            android:name=".ui.ManageExcludedDaysActivity" />
 
         <receiver android:name=".widget.CountdownAppWidget">
             <intent-filter>
