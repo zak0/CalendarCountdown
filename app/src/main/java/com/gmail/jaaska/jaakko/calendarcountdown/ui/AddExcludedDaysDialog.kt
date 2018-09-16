@@ -43,7 +43,7 @@ class AddExcludedDaysDialog(private val context: Context,
         // excluded days and to/from date is missing.
         dialog?.setOnShowListener {
             dialog?.getButton(AlertDialog.BUTTON_POSITIVE)?.apply {
-                setOnClickListener { addRange() }
+                setOnClickListener { _ -> addRange() }
             }
         }
 
@@ -73,7 +73,9 @@ class AddExcludedDaysDialog(private val context: Context,
         // If set dates are valid...
         if (dateFrom > 0 && dateTo > 0 && dateTo > dateFrom) {
             Log.d(TAG, "addRange() - adding a new range")
-            val range = ExcludedDays(settings, dateFrom, dateTo)
+            val range = ExcludedDays(settings,
+                    DateUtil.formatDatabaseDate(dateFrom),
+                    DateUtil.formatDatabaseDate(dateTo))
             settings.addExcludedDays(range)
             onExcludedDaysAdded()
             dialog?.dismiss()

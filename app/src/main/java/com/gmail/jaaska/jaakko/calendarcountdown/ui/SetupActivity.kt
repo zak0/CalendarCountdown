@@ -99,7 +99,8 @@ class SetupActivity : AppCompatActivity() {
      * Checks data entered by the user.
      */
     private fun validateInputs(): Boolean {
-        return settings.endDate > 100
+        // TODO Actually validate something...
+        return true
     }
 
     /**
@@ -200,10 +201,10 @@ class SetupActivity : AppCompatActivity() {
     }
 
     private fun showSetDateDialog() {
-        val calendar = Calendar.getInstance().apply { time = Date(settings.endDate) }
+        val calendar = Calendar.getInstance().apply { time = DateUtil.parseDatabaseDate(settings.endDate) }
         DatePickerDialog(this, { _, year, month, dayOfMonth ->
             calendar.set(year, month, dayOfMonth)
-            settings.endDate = calendar.timeInMillis
+            settings.endDate = DateUtil.formatDatabaseDate(calendar.time)
             adapter?.notifyDataSetChanged()
         }, calendar[Calendar.YEAR], calendar[Calendar.MONTH], calendar[Calendar.DAY_OF_MONTH])
                 .show()
@@ -240,7 +241,7 @@ class SetupActivity : AppCompatActivity() {
                     }
                     SetupItemType.THE_DATE -> {
                         title.text = getString(R.string.setup_setting_end_date)
-                        subtitle.text = DateUtil.formatDate(settings.endDate)
+                        subtitle.text = DateUtil.databaseDateToUiDate(settings.endDate)
                         setOnClickListener { showSetDateDialog() }
                     }
                     SetupItemType.EXCLUDE_WEEKENDS -> {
@@ -259,7 +260,7 @@ class SetupActivity : AppCompatActivity() {
                         subtitle.text = if (settings.isExcludeWeekends) {
                             val now = System.currentTimeMillis()
                             getString(R.string.setup_setting_exclude_weekends_subtitle_enabled,
-                                    CountdownSettings.weekEndDaysInTimeFrame(now, settings.endDate))
+                                    CountdownSettings.weekEndDaysInTimeFrame(now, DateUtil.parseDatabaseDate(settings.endDate).time))
                         } else {
                             getString(R.string.setup_setting_exclude_weekends_subtitle_disabled)
                         }

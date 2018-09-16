@@ -17,7 +17,6 @@ import com.gmail.jaaska.jaakko.calendarcountdown.data.CountdownSettings
 import com.gmail.jaaska.jaakko.calendarcountdown.util.DateUtil
 import kotlinx.android.synthetic.main.activity_manage_excluded_days.*
 import kotlinx.android.synthetic.main.listitem_excluded_days.view.*
-import java.util.*
 
 class ManageExcludedDaysActivity : AppCompatActivity() {
 
@@ -84,10 +83,8 @@ class ManageExcludedDaysActivity : AppCompatActivity() {
             val item = settings.excludedDays[position]
             val holder = viewHolder as ExcludedDaysViewHolder
 
-            val from = Date(item.fromDate)
-            val to = Date(item.toDate)
-            val fromString = DateUtil.formatDate(from)
-            val toString = DateUtil.formatDate(to)
+            val fromString = DateUtil.databaseDateToUiDate(item.fromDate)
+            val toString = DateUtil.databaseDateToUiDate(item.toDate)
 
             holder.itemView.context.apply {
                 holder.itemView.textViewExclDateFrom.text = fromString
