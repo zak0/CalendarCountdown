@@ -5,17 +5,14 @@ import android.database.Cursor
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
 import android.util.Log
-
 import com.gmail.jaaska.jaakko.calendarcountdown.data.CountdownSettings
 import com.gmail.jaaska.jaakko.calendarcountdown.data.ExcludedDays
 import com.gmail.jaaska.jaakko.calendarcountdown.data.GeneralSettings
-
-import java.util.ArrayList
+import java.util.*
 
 /**
  * Handler for all SQLite activity.
  * Reads and writes into the database.
- *
  *
  * Created by jaakko on 24.6.2018.
  */
@@ -66,7 +63,7 @@ class DatabaseHelper(context: Context,
         // create countdown table
         var sql = "CREATE TABLE '" + TBLCOUNTDOWN + "' (" +
                 "`" + COLCOUNTDOWNID + "` INTEGER," +
-                "`" + COLCDENDDATE + "` INTEGER," +
+                "`" + COLCDENDDATE + "` TEXT," +
                 "`" + COLCDEXCLUDEWEEKENDS + "` INTEGER," +
                 "`" + COLCDLABEL + "` TEXT," +
                 "`" + COLCDWIDGET + "` INTEGER," +
@@ -78,8 +75,8 @@ class DatabaseHelper(context: Context,
         sql = "CREATE TABLE `" + TBLEXCLUDEDDAYS + "` (" +
                 "`" + COLEXCLUDEDDAYSID + "` INTEGER," +
                 "`" + COLCOUNTDOWNID + "` INTEGER," +
-                "`" + COLEDFROMDATE + "` INTEGER," +
-                "`" + COLEDTODATE + "` INTEGER," +
+                "`" + COLEDFROMDATE + "` TEXT," +
+                "`" + COLEDTODATE + "` TEXT," +
                 "PRIMARY KEY(" + COLEXCLUDEDDAYSID + ")" +
                 ")"
         db.execSQL(sql)
@@ -251,7 +248,7 @@ class DatabaseHelper(context: Context,
                 if (cur.count > 0) {
                     // It id already exist --> update existing
                     Log.d(TAG, "saveToDB() - updating countdownid " + Integer.toString(settings.dbId))
-                    sql = "update " + TBLCOUNTDOWN + " set " + COLCDENDDATE + "=" + java.lang.Long.toString(settings.endDate) + "," +
+                    sql = "update " + TBLCOUNTDOWN + " set " + COLCDENDDATE + "='" + settings.endDate + "'," +
                             COLCDEXCLUDEWEEKENDS + "=" + (if (settings.isExcludeWeekends) "1" else "0") + "," +
                             COLCDLABEL + "='" + settings.label + "'," +
                             COLCDWIDGET + "=" + (if (settings.isUseOnWidget) "1" else "0") + " where " + COLCOUNTDOWNID + "=" + Integer.toString(settings.dbId)
@@ -260,7 +257,7 @@ class DatabaseHelper(context: Context,
                     // It did not exist --> insert a new entry
                     Log.d(TAG, "saveToDB() - inserting a new countdown entry")
                     sql = "insert into " + TBLCOUNTDOWN + "(" + COLCDENDDATE + "," + COLCDEXCLUDEWEEKENDS + "," + COLCDLABEL + "," + COLCDWIDGET + ") " +
-                            "values(" + java.lang.Long.toString(settings.endDate) + "," + (if (settings.isExcludeWeekends) "1" else "0") + "," +
+                            "values('" + settings.endDate + "'," + (if (settings.isExcludeWeekends) "1" else "0") + "," +
                             "'" + settings.label + "'," + (if (settings.isUseOnWidget) "1" else "0") + ")"
                     db.execSQL(sql)
 
@@ -333,7 +330,7 @@ class DatabaseHelper(context: Context,
         val ret = CountdownSettings()
 
         ret.dbId = cur.getInt(0)
-        ret.endDate = cur.getLong(1)
+        ret.endDate = cur.getString(1)
         ret.isExcludeWeekends = cur.getInt(2) == 1
         ret.label = cur.getString(3)
         ret.isUseOnWidget = cur.getInt(4) == 1
