@@ -294,8 +294,8 @@ class DatabaseHelper(context: Context,
                     // Entry did already exist --> update it.
                     Log.d(TAG, "saveExcludedDaysOfCountdown() - updating an excludeddays entry")
                     sql = "update " + TBLEXCLUDEDDAYS + " set " +
-                            COLEDFROMDATE + "=" + java.lang.Long.toString(excludedDays.fromDate) + "," +
-                            COLEDTODATE + "=" + java.lang.Long.toString(excludedDays.toDate) +
+                            COLEDFROMDATE + "='" + excludedDays.fromDate + "'," +
+                            COLEDTODATE + "='" + excludedDays.toDate + "'" +
                             " where " + COLEXCLUDEDDAYSID + "=" + Integer.toString(excludedDays.dbId)
                     db.execSQL(sql)
 
@@ -308,9 +308,9 @@ class DatabaseHelper(context: Context,
                             COLCOUNTDOWNID + "," +
                             COLEDFROMDATE + "," +
                             COLEDTODATE + ") values ("
-                            + Integer.toString(countdown.dbId) + "," +
-                            java.lang.Long.toString(excludedDays.fromDate) + "," +
-                            java.lang.Long.toString(excludedDays.toDate) + ")")
+                            + Integer.toString(countdown.dbId) + ",'" +
+                            excludedDays.fromDate + "','" +
+                            excludedDays.toDate + "')")
 
                     db.execSQL(sql)
 
@@ -342,8 +342,8 @@ class DatabaseHelper(context: Context,
         val ret = ExcludedDays()
 
         ret.dbId = cur.getInt(0)
-        ret.fromDate = cur.getLong(2)
-        ret.toDate = cur.getLong(3)
+        ret.fromDate = cur.getString(2)
+        ret.toDate = cur.getString(3)
 
         return ret
     }
