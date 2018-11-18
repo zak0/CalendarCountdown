@@ -25,43 +25,12 @@
         app:layout_constraintStart_toEndOf="@id/textViewExclDaysCount" />
 
     <TextView
-        android:id="@+id/textViewExclDateFromTitle"
+        android:id="@+id/textViewExclDates"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/excluded_days_manager_from_title"
+        android:text="@string/excluded_days_manager_range_dates"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toEndOf="@id/textViewExclDaysCount" />
-
-
-    <TextView
-        android:id="@+id/textViewExclDateFrom"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:paddingEnd="8dp"
-        android:paddingStart="4dp"
-        android:text="@string/placeholder_date"
-        android:textColor="@color/colorBlack"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toEndOf="@id/textViewExclDateFromTitle" />
-
-    <TextView
-        android:id="@+id/textViewExclDateToTitle"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/excluded_days_manager_to_title"
-        app:layout_constraintBottom_toBottomOf="@id/textViewExclDateFrom"
-        app:layout_constraintStart_toEndOf="@id/textViewExclDateFrom" />
-
-    <TextView
-        android:id="@+id/textViewExclDateTo"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:paddingEnd="8dp"
-        android:paddingStart="4dp"
-        android:text="@string/placeholder_date"
-        android:textColor="@color/colorBlack"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toEndOf="@id/textViewExclDateToTitle" />
 
     <ImageButton
         android:id="@+id/buttonDelete"

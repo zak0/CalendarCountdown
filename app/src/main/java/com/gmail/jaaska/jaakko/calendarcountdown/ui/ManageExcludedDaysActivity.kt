@@ -2,12 +2,14 @@ package com.gmail.jaaska.jaakko.calendarcountdown.ui
 
 import android.app.Activity
 import android.content.Intent
+import android.os.Build
 import android.os.Bundle
 import android.support.v7.app.AlertDialog
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.DividerItemDecoration
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
+import android.text.Html
 import android.view.LayoutInflater
 import android.view.MenuItem
 import android.view.View
@@ -87,9 +89,13 @@ class ManageExcludedDaysActivity : AppCompatActivity() {
             val toString = DateUtil.databaseDateToUiDate(item.toDate)
 
             holder.itemView.context.apply {
-                holder.itemView.textViewExclDateFrom.text = fromString
-                holder.itemView.textViewExclDateTo.text = toString
                 holder.itemView.textViewExclDaysCount.text = item.daysCount.toString()
+
+                holder.itemView.textViewDaysExcluded.text = getString(
+                        if (fromString == toString) R.string.excluded_days_manager_day_excluded
+                        else R.string.excluded_days_manager_days_excluded)
+
+                holder.itemView.textViewExclDates.text = getDateRangeText(fromString, toString)
             }
 
             holder.itemView.buttonDelete.setOnClickListener {
@@ -103,7 +109,8 @@ class ManageExcludedDaysActivity : AppCompatActivity() {
                         .setPositiveButton(R.string.common_yes) { _, _ ->
                             settings.excludedDays.remove(item)
                             adapter?.notifyDataSetChanged()
-                            refreshTotalExcludedDaysCount()}
+                            refreshTotalExcludedDaysCount()
+                        }
                         .setNegativeButton(R.string.common_no) { _, _ -> }
                         .show()
             }
@@ -111,6 +118,23 @@ class ManageExcludedDaysActivity : AppCompatActivity() {
 
         override fun getItemCount(): Int {
             return settings.excludedDays.size
+        }
+    }
+
+    @Suppress("deprecation")
+    private fun getDateRangeText(fromString: String, toString: String): CharSequence {
+        val htmlString =
+                if (fromString == toString) {
+                    // If only one day is excluded, show only the date
+                    getString(R.string.excluded_days_manager_range_date).format(fromString)
+                } else {
+                    getString(R.string.excluded_days_manager_range_dates).format(fromString, toString)
+                }
+
+        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            Html.fromHtml(htmlString, Html.FROM_HTML_MODE_LEGACY)
+        } else {
+            Html.fromHtml(htmlString)
         }
     }
 

@@ -41,9 +41,10 @@
     <string name="setup_dialog_unsaved_changes_negative">Go back without saving</string>
     <string name="setup_dialog_unsaved_changes_neutral">Keep editing</string>
 
-    <string name="excluded_days_manager_from_title">from</string>
-    <string name="excluded_days_manager_to_title">to</string>
+    <string name="excluded_days_manager_range_dates"><![CDATA[from <b>%s</b> to <b>%s</b>]]></string>
+    <string name="excluded_days_manager_range_date"><![CDATA[<b>%s</b>]]></string>
     <string name="excluded_days_manager_days_excluded">days excluded</string>
+    <string name="excluded_days_manager_day_excluded">day excluded</string>
     <string name="excluded_days_manager_confirm_delete_title">Are you sure?</string>
     <string name="excluded_days_manager_confirm_delete_message">Really want to delete %d excluded days from %s to %s?</string>
 
