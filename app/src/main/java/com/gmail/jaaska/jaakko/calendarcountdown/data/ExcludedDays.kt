@@ -29,7 +29,25 @@ class ExcludedDays : Serializable {
         get() {
 
             val from = if (fromDateLong > System.currentTimeMillis()) fromDateLong else System.currentTimeMillis()
-            var totalDays = CountdownSettings.daysInTimeFrame(from, toDateLong)
+
+            // We need to make sure not to exclude days that are after the end date of this countdown
+
+            var rangeEndDateLong = toDateLong
+
+            settings?.also {
+                val countDownEndLong = DateUtil.parseDatabaseDate(it.endDate).time
+
+                // First check if entire range is after the countdown
+                if (from > rangeEndDateLong) {
+                    return 0
+                }
+
+                // Range end cannot be later than countdown end
+                if (rangeEndDateLong > countDownEndLong) rangeEndDateLong = countDownEndLong
+
+            }
+
+            var totalDays = CountdownSettings.daysInTimeFrame(from, rangeEndDateLong)
 
             // Reduce weekend days from the excluded days
             // so that weekend days are not excluded twice)
