@@ -27,7 +27,7 @@ class CountdownsRecyclerViewAdapter(private val items: List<CountdownSettings>) 
         val item = items[position]
         val vh = holder as ViewHolder
 
-        vh.textViewEndDate.text = DateUtil.formatDate(item.endDate)
+        vh.textViewEndDate.text = DateUtil.databaseDateToUiDate(item.endDate)
         vh.textViewDaysCount.text = "${item.daysToEndDate}"
         vh.textViewLabel.text = item.label
         vh.item = item

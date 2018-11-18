@@ -1,6 +1,7 @@
 package com.gmail.jaaska.jaakko.calendarcountdown.data
 
 import android.util.Log
+import com.gmail.jaaska.jaakko.calendarcountdown.util.DateUtil
 
 import java.io.Serializable
 import java.util.ArrayList
@@ -12,7 +13,7 @@ import java.util.Date
  */
 class CountdownSettings : Serializable, Comparable<CountdownSettings> {
 
-    var endDate: Long = 0 // "zero-date" of the countdown
+    var endDate: String = "" // "zero-date" of the countdown as a "dd-MM-yyyy" string
     private var excludeWeekends: Boolean = false // are weekened excluded or not
     var isUseOnWidget: Boolean = false // tells if this is the Countdown to show on a widget
 
@@ -41,11 +42,10 @@ class CountdownSettings : Serializable, Comparable<CountdownSettings> {
         }
 
     /**
-     * Returns time in milliseconds to end date from now.
-     * @return
+     * Time in milliseconds to end date from now.
      */
     private val timeToEndDate: Long
-        get() = endDate - currentTimeWithOnlyDate
+        get() = DateUtil.parseDatabaseDate(endDate).time - currentTimeWithOnlyDate
 
     /**
      * Returns amount of full days to the end date.
@@ -56,7 +56,7 @@ class CountdownSettings : Serializable, Comparable<CountdownSettings> {
             val days = toEnd / 1000 / 60 / 60 / 24
 
             var ret = if (excludeWeekends)
-                days.toInt() - weekEndDaysInTimeFrame(currentTimeWithOnlyDate, endDate)
+                days.toInt() - weekEndDaysInTimeFrame(currentTimeWithOnlyDate, DateUtil.parseDatabaseDate(endDate).time)
             else
                 days.toInt()
 
@@ -67,16 +67,12 @@ class CountdownSettings : Serializable, Comparable<CountdownSettings> {
         }
 
     init {
-        endDate = currentTimeWithOnlyDate // init new countdown to this day
+        endDate = DateUtil.formatDatabaseDate(currentTimeWithOnlyDate) // init new countdown to this day
         excludeWeekends = false
         excludedDays = ArrayList()
         label = ""
         dbId = Integer.MIN_VALUE
         isUseOnWidget = false
-    }
-
-    fun endDateIsValid(): Boolean {
-        return endDate > 0
     }
 
     fun getExcludedDaysCount(): Int {
