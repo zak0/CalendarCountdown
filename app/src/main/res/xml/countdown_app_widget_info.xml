@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <appwidget-provider xmlns:android="http://schemas.android.com/apk/res/android"
-    android:initialKeyguardLayout="@layout/countdown_app_widget"
-    android:initialLayout="@layout/countdown_app_widget"
-    android:minHeight="40dp"
+    android:initialKeyguardLayout="@layout/widget_layout_empty"
+    android:initialLayout="@layout/widget_layout_empty"
     android:minWidth="110dp"
+    android:minHeight="40dp"
     android:previewImage="@drawable/example_appwidget_preview"
     android:resizeMode="horizontal|vertical"
     android:updatePeriodMillis="3600000"
