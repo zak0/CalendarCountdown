@@ -95,19 +95,27 @@ class DatabaseHelper(context: Context,
     }
 
     /**
-     * Loads the Countdown that is set to be used on a widget.
+     * Loads the Countdowns that are set to be used on a widget.
      */
-    fun loadSettingsForWidget(): CountdownSettings? {
-        var ret: CountdownSettings? = null
+    fun loadSettingsForWidget(): List<CountdownSettings> {
+        val ret = ArrayList<CountdownSettings>()
 
         val sql = "select * from $TBLCOUNTDOWN where $COLCDWIDGET=1"
 
         db?.also { db ->
             val cur = db.rawQuery(sql, null)
+
             cur.moveToFirst()
-            if (!cur.isAfterLast) {
-                ret = cursorToCountdown(cur)
-                ret?.also { loadExcludedDaysForCountdown(it) }
+
+            var countdown: CountdownSettings
+            while (!cur.isAfterLast) {
+                countdown = cursorToCountdown(cur)
+                ret.add(countdown)
+
+                // Load excluded date ranges for countdown
+                loadExcludedDaysForCountdown(countdown)
+
+                cur.moveToNext()
             }
         }
 

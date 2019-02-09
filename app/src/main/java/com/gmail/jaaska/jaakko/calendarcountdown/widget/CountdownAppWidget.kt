@@ -15,7 +15,7 @@ import com.gmail.jaaska.jaakko.calendarcountdown.R
  */
 class CountdownAppWidget : AppWidgetProvider() {
 
-    private var settings: CountdownSettings? = null
+    private var settings: List<CountdownSettings> = ArrayList()
 
     private fun updateAppWidget(context: Context, appWidgetManager: AppWidgetManager,
                                 appWidgetId: Int) {
@@ -32,7 +32,7 @@ class CountdownAppWidget : AppWidgetProvider() {
         // Construct the RemoteViews object
         val views = RemoteViews(context.packageName, R.layout.countdown_app_widget)
 
-        settings?.also {
+        settings.firstOrNull()?.also {
             views.setTextViewText(R.id.appwidget_text, Integer.toString(it.daysToEndDate))
         }
 
