@@ -36,6 +36,7 @@ class CountdownAppWidgetRemoteViewsFactory(private val context: Context)
         val views = RemoteViews(context.packageName, R.layout.widget_listitem_countdown)
         views.setTextViewText(R.id.days, "${countdown.daysToEndDate}")
         views.setTextViewText(R.id.title, countdown.label)
+        views.setTextViewText(R.id.daysUntilLabel, context.getString(R.string.countdowns_list_days_until))
 
         return views
     }

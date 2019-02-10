@@ -27,6 +27,7 @@
             android:layout_height="wrap_content"
             android:paddingTop="10dp"
             android:text="@string/countdowns_list_days_until"
+            android:textColor="@color/colorGray"
             android:textSize="@dimen/text_body"
             card_view:layout_constraintStart_toEndOf="@id/textViewCountdownDaysToGo" />
 
