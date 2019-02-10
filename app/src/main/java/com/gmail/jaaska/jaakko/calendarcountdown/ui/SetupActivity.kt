@@ -21,7 +21,7 @@ import com.gmail.jaaska.jaakko.calendarcountdown.R
 import com.gmail.jaaska.jaakko.calendarcountdown.data.CountdownSettings
 import com.gmail.jaaska.jaakko.calendarcountdown.storage.DatabaseHelper
 import com.gmail.jaaska.jaakko.calendarcountdown.util.DateUtil
-import com.gmail.jaaska.jaakko.calendarcountdown.widget.CountdownAppWidget
+import com.gmail.jaaska.jaakko.calendarcountdown.widget.CountdownAppWidgetProvider
 import kotlinx.android.synthetic.main.activity_setup.*
 import kotlinx.android.synthetic.main.dialog_countdown_title.view.*
 import kotlinx.android.synthetic.main.listitem_setup.view.*
@@ -107,9 +107,9 @@ class SetupActivity : AppCompatActivity() {
      * Updates all visible widgets with possibly changed settings.
      */
     private fun updateWidgets() {
-        val intent = Intent(this, CountdownAppWidget::class.java)
+        val intent = Intent(this, CountdownAppWidgetProvider::class.java)
         intent.action = AppWidgetManager.ACTION_APPWIDGET_UPDATE
-        val name = ComponentName(this, CountdownAppWidget::class.java)
+        val name = ComponentName(this, CountdownAppWidgetProvider::class.java)
         val ids = AppWidgetManager.getInstance(this).getAppWidgetIds(name)
         intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, ids)
         sendBroadcast(intent)

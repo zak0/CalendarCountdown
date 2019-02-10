@@ -14,7 +14,7 @@ import com.gmail.jaaska.jaakko.calendarcountdown.R
 /**
  * The widget.
  */
-class CountdownAppWidget : AppWidgetProvider() {
+class CountdownAppWidgetProvider : AppWidgetProvider() {
 
     private var settings: List<CountdownSettings> = ArrayList()
 
@@ -75,7 +75,7 @@ class CountdownAppWidget : AppWidgetProvider() {
     }
 
     companion object {
-        private val TAG = CountdownAppWidget::class.java.simpleName
+        private val TAG = CountdownAppWidgetProvider::class.java.simpleName
     }
 }
 
