@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.gmail.jaaska.jaakko.calendarcountdown">
+    package="zak0.github.calendarcountdown">
 
     <application
         android:allowBackup="true"

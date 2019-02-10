@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:padding="0dp"
-    tools:context="com.gmail.jaaska.jaakko.calendarcountdown.ui.MainActivity">
+    tools:context="zak0.github.calendarcountdown.ui.MainActivity">
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/recyclerViewCountdowns"

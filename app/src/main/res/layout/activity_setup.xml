@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.gmail.jaaska.jaakko.calendarcountdown.ui.SetupActivity">
+    tools:context="zak0.github.calendarcountdown.ui.SetupActivity">
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/recyclerView"
