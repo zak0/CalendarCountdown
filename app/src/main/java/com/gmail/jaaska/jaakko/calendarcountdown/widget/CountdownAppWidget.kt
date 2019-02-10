@@ -3,6 +3,7 @@ package com.gmail.jaaska.jaakko.calendarcountdown.widget
 import android.appwidget.AppWidgetManager
 import android.appwidget.AppWidgetProvider
 import android.content.Context
+import android.content.Intent
 import android.util.Log
 import android.widget.RemoteViews
 
@@ -29,17 +30,19 @@ class CountdownAppWidget : AppWidgetProvider() {
             closeDb()
         }
 
-        // Construct the RemoteViews object
-        val views = RemoteViews(context.packageName, R.layout.countdown_app_widget)
+        // If there are no countdowns to display on the widget, show the layout instructing
+        // to open the app to set them up...
+        //
+        // Otherwise display the countdowns.
+        val remoteViews = RemoteViews(context.packageName,
+                if (settings.isNotEmpty()) R.layout.widget_layout_populated
+                else R.layout.widget_layout_empty)
 
-        settings.firstOrNull()?.also {
-            views.setTextViewText(R.id.appwidget_text, Integer.toString(it.daysToEndDate))
-        }
-
-        // TODO: Open the app when tapping the widget?
+        // Setup the layout of the widget
+        displayCountdowns(context, appWidgetManager, remoteViews, appWidgetId)
 
         // Instruct the widget manager to update the widget
-        appWidgetManager.updateAppWidget(appWidgetId, views)
+        appWidgetManager.updateAppWidget(appWidgetId, remoteViews)
     }
 
     override fun onUpdate(context: Context, appWidgetManager: AppWidgetManager, appWidgetIds: IntArray) {
@@ -47,7 +50,6 @@ class CountdownAppWidget : AppWidgetProvider() {
         Log.d(TAG, "onUpdate() - called")
         // There may be multiple widgets active, so update all of them
         for (appWidgetId in appWidgetIds) {
-
             updateAppWidget(context, appWidgetManager, appWidgetId)
         }
     }
@@ -58,6 +60,18 @@ class CountdownAppWidget : AppWidgetProvider() {
 
     override fun onDisabled(context: Context) {
         // Enter relevant functionality for when the last widget is disabled
+    }
+
+    /**
+     * Starts the service that will populate the widget.
+     */
+    private fun displayCountdowns(context: Context,
+                                  appWidgetManager: AppWidgetManager,
+                                  views: RemoteViews,
+                                  appWidgetId: Int) {
+        val intent = Intent(context, CountdownAppWidgetRemoteViewsService::class.java)
+        views.setRemoteAdapter(R.id.listView, intent)
+        appWidgetManager.updateAppWidget(appWidgetId, views)
     }
 
     companion object {

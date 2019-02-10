@@ -29,6 +29,9 @@
                 android:name="android.appwidget.provider"
                 android:resource="@xml/countdown_app_widget_info" />
         </receiver>
+
+        <service android:name=".widget.CountdownAppWidgetRemoteViewsService"
+            android:permission="android.permission.BIND_REMOTEVIEWS" />
     </application>
 
 </manifest>
