@@ -2,8 +2,6 @@ package com.gmail.jaaska.jaakko.calendarcountdown.ui
 
 import android.app.Activity
 import android.app.DatePickerDialog
-import android.appwidget.AppWidgetManager
-import android.content.ComponentName
 import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
@@ -65,7 +63,7 @@ class SetupActivity : AppCompatActivity() {
         Log.d(TAG, "onPause() - called")
         super.onPause()
 
-        updateWidgets()
+        CountdownAppWidgetProvider.sendRefreshBroadcast(this)
     }
 
     override fun onBackPressed() {
@@ -101,18 +99,6 @@ class SetupActivity : AppCompatActivity() {
     private fun validateInputs(): Boolean {
         // TODO Actually validate something...
         return true
-    }
-
-    /**
-     * Updates all visible widgets with possibly changed settings.
-     */
-    private fun updateWidgets() {
-        val intent = Intent(this, CountdownAppWidgetProvider::class.java)
-        intent.action = AppWidgetManager.ACTION_APPWIDGET_UPDATE
-        val name = ComponentName(this, CountdownAppWidgetProvider::class.java)
-        val ids = AppWidgetManager.getInstance(this).getAppWidgetIds(name)
-        intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, ids)
-        sendBroadcast(intent)
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {

@@ -12,6 +12,7 @@ import com.gmail.jaaska.jaakko.calendarcountdown.R
 import com.gmail.jaaska.jaakko.calendarcountdown.data.CountdownSettings
 import com.gmail.jaaska.jaakko.calendarcountdown.data.GeneralSettings
 import com.gmail.jaaska.jaakko.calendarcountdown.storage.DatabaseHelper
+import com.gmail.jaaska.jaakko.calendarcountdown.widget.CountdownAppWidgetProvider
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.dialog_sort_order.*
 
@@ -94,6 +95,9 @@ class MainActivity : AppCompatActivity() {
 
             // Sort and refresh
             refreshViews()
+
+            // Refresh also possible home screen widgets
+            CountdownAppWidgetProvider.sendRefreshBroadcast(this)
 
             // Save to db
             db?.apply {

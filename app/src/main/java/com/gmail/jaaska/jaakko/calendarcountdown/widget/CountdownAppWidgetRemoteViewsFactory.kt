@@ -1,6 +1,7 @@
 package com.gmail.jaaska.jaakko.calendarcountdown.widget
 
 import android.content.Context
+import android.util.Log
 import android.widget.RemoteViews
 import android.widget.RemoteViewsService
 import com.gmail.jaaska.jaakko.calendarcountdown.R
@@ -13,12 +14,8 @@ class CountdownAppWidgetRemoteViewsFactory(private val context: Context)
     private lateinit var countdowns: ArrayList<CountdownSettings>
 
     override fun onCreate() {
-        DatabaseHelper(context, DatabaseHelper.DB_NAME, DatabaseHelper.DB_VERSION).apply {
-            openDb()
-            countdowns = ArrayList(loadSettingsForWidget())
-            countdowns.sort()
-            closeDb()
-        }
+        Log.d(TAG, "onCreate()")
+        loadCountdownsFromDb()
     }
 
     override fun getLoadingView(): RemoteViews {
@@ -28,11 +25,15 @@ class CountdownAppWidgetRemoteViewsFactory(private val context: Context)
 
     override fun getItemId(position: Int): Long = countdowns[position].dbId.toLong()
 
-    override fun onDataSetChanged()  = Unit
+    override fun onDataSetChanged() {
+        Log.d(TAG, "onDataSetChanged()")
+        loadCountdownsFromDb()
+    }
 
     override fun hasStableIds(): Boolean = true
 
     override fun getViewAt(position: Int): RemoteViews {
+        Log.d(TAG, "getViewAt($position)")
         val countdown = countdowns[position]
         val views = RemoteViews(context.packageName, R.layout.widget_listitem_countdown)
         views.setTextViewText(R.id.days, "${countdown.daysToEndDate}")
@@ -47,4 +48,17 @@ class CountdownAppWidgetRemoteViewsFactory(private val context: Context)
     override fun getViewTypeCount(): Int = 1
 
     override fun onDestroy() = Unit
+
+    private fun loadCountdownsFromDb() {
+        DatabaseHelper(context, DatabaseHelper.DB_NAME, DatabaseHelper.DB_VERSION).apply {
+            openDb()
+            countdowns = ArrayList(loadSettingsForWidget())
+            countdowns.sort()
+            closeDb()
+        }
+    }
+
+    companion object {
+        private val TAG = CountdownAppWidgetRemoteViewsFactory::class.java.simpleName
+    }
 }

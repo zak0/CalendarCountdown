@@ -2,6 +2,7 @@ package com.gmail.jaaska.jaakko.calendarcountdown.widget
 
 import android.appwidget.AppWidgetManager
 import android.appwidget.AppWidgetProvider
+import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
 import android.util.Log
@@ -52,6 +53,8 @@ class CountdownAppWidgetProvider : AppWidgetProvider() {
         for (appWidgetId in appWidgetIds) {
             updateAppWidget(context, appWidgetManager, appWidgetId)
         }
+
+        appWidgetManager.notifyAppWidgetViewDataChanged(appWidgetIds, R.id.listView)
     }
 
     override fun onEnabled(context: Context) {
@@ -76,6 +79,15 @@ class CountdownAppWidgetProvider : AppWidgetProvider() {
 
     companion object {
         private val TAG = CountdownAppWidgetProvider::class.java.simpleName
+
+        fun sendRefreshBroadcast(context: Context) {
+            val intent = Intent(context, CountdownAppWidgetProvider::class.java)
+            intent.action = AppWidgetManager.ACTION_APPWIDGET_UPDATE
+            val name = ComponentName(context, CountdownAppWidgetProvider::class.java)
+            val ids = AppWidgetManager.getInstance(context).getAppWidgetIds(name)
+            intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, ids)
+            context.sendBroadcast(intent)
+        }
     }
 }
 
