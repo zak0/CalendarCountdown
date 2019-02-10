@@ -10,12 +10,13 @@ import com.gmail.jaaska.jaakko.calendarcountdown.storage.DatabaseHelper
 class CountdownAppWidgetRemoteViewsFactory(private val context: Context)
     : RemoteViewsService.RemoteViewsFactory {
 
-    private lateinit var countdowns: List<CountdownSettings>
+    private lateinit var countdowns: ArrayList<CountdownSettings>
 
     override fun onCreate() {
         DatabaseHelper(context, DatabaseHelper.DB_NAME, DatabaseHelper.DB_VERSION).apply {
             openDb()
-            countdowns = loadSettingsForWidget()
+            countdowns = ArrayList(loadSettingsForWidget())
+            countdowns.sort()
             closeDb()
         }
     }
