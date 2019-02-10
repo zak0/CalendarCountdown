@@ -1,5 +1,7 @@
 package com.gmail.jaaska.jaakko.calendarcountdown.widget
 
+import android.app.PendingIntent
+import android.app.TaskStackBuilder
 import android.appwidget.AppWidgetManager
 import android.appwidget.AppWidgetProvider
 import android.content.ComponentName
@@ -11,6 +13,7 @@ import android.widget.RemoteViews
 import com.gmail.jaaska.jaakko.calendarcountdown.data.CountdownSettings
 import com.gmail.jaaska.jaakko.calendarcountdown.storage.DatabaseHelper
 import com.gmail.jaaska.jaakko.calendarcountdown.R
+import com.gmail.jaaska.jaakko.calendarcountdown.ui.MainActivity
 
 /**
  * The widget.
@@ -39,8 +42,13 @@ class CountdownAppWidgetProvider : AppWidgetProvider() {
                 if (settings.isNotEmpty()) R.layout.widget_layout_populated
                 else R.layout.widget_layout_empty)
 
-        // Setup the layout of the widget
-        displayCountdowns(context, appWidgetManager, remoteViews, appWidgetId)
+        if (settings.isNotEmpty()) {
+            displayCountdowns(context, appWidgetManager, remoteViews, appWidgetId)
+        } else {
+            val intent = Intent(context, MainActivity::class.java)
+            val pendingIndent = PendingIntent.getActivity(context, 0, intent, 0)
+            remoteViews.setOnClickPendingIntent(R.id.appwidget_text, pendingIndent)
+        }
 
         // Instruct the widget manager to update the widget
         appWidgetManager.updateAppWidget(appWidgetId, remoteViews)
@@ -74,6 +82,14 @@ class CountdownAppWidgetProvider : AppWidgetProvider() {
                                   appWidgetId: Int) {
         val intent = Intent(context, CountdownAppWidgetRemoteViewsService::class.java)
         views.setRemoteAdapter(R.id.listView, intent)
+
+        // Add "template" intent for onClick handlers for list items (each of the countdowns).
+        val clickIntent = Intent(context, MainActivity::class.java)
+        val pendingIntent = TaskStackBuilder.create(context)
+                .addNextIntentWithParentStack(clickIntent)
+                .getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT)
+        views.setPendingIntentTemplate(R.id.listView, pendingIntent)
+
         appWidgetManager.updateAppWidget(appWidgetId, views)
     }
 

@@ -1,6 +1,7 @@
 package com.gmail.jaaska.jaakko.calendarcountdown.widget
 
 import android.content.Context
+import android.content.Intent
 import android.util.Log
 import android.widget.RemoteViews
 import android.widget.RemoteViewsService
@@ -39,6 +40,10 @@ class CountdownAppWidgetRemoteViewsFactory(private val context: Context)
         views.setTextViewText(R.id.days, "${countdown.daysToEndDate}")
         views.setTextViewText(R.id.title, countdown.label)
         views.setTextViewText(R.id.daysUntilLabel, context.getString(R.string.countdowns_list_days_until))
+
+        val fillInIntent = Intent()
+        fillInIntent.putExtra(CountdownSettings.extraName, countdown) // TODO Currently not used, but added because I can...
+        views.setOnClickFillInIntent(R.id.container, fillInIntent)
 
         return views
     }
