@@ -7,7 +7,7 @@ CalendarCountdown is an app that calculates days from current moment to the set 
 
 ## Features
 - User can set multiple countdowns and see them nicely as a list.
-- Widget for showing the value of selected countdown on a home screen.
+- Widget for showing the value of selected countdowns on home screen.
 
 ## Screenshots
 See the screenshots folder.
