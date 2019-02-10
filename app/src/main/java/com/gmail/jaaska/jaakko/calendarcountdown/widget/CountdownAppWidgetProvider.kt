@@ -14,6 +14,7 @@ import com.gmail.jaaska.jaakko.calendarcountdown.data.CountdownSettings
 import com.gmail.jaaska.jaakko.calendarcountdown.storage.DatabaseHelper
 import com.gmail.jaaska.jaakko.calendarcountdown.R
 import com.gmail.jaaska.jaakko.calendarcountdown.ui.MainActivity
+import com.gmail.jaaska.jaakko.calendarcountdown.ui.SetupActivity
 
 /**
  * The widget.
@@ -84,7 +85,7 @@ class CountdownAppWidgetProvider : AppWidgetProvider() {
         views.setRemoteAdapter(R.id.listView, intent)
 
         // Add "template" intent for onClick handlers for list items (each of the countdowns).
-        val clickIntent = Intent(context, MainActivity::class.java)
+        val clickIntent = Intent(context, SetupActivity::class.java)
         val pendingIntent = TaskStackBuilder.create(context)
                 .addNextIntentWithParentStack(clickIntent)
                 .getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT)
