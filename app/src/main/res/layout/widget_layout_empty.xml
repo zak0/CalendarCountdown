@@ -1,6 +1,8 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/container"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@android:color/white"
     android:padding="@dimen/widget_margin">
 
     <TextView
@@ -10,8 +12,7 @@
         android:layout_gravity="center"
         android:layout_margin="8dp"
         android:text="@string/appwidget_text"
-        android:textColor="#ffffff"
-        android:textSize="24sp"
-        android:textStyle="bold" />
+        android:textColor="@color/colorBlack"
+        android:textSize="@dimen/text_title" />
 
 </FrameLayout>

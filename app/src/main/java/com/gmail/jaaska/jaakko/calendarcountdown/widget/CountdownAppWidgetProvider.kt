@@ -47,7 +47,7 @@ class CountdownAppWidgetProvider : AppWidgetProvider() {
         } else {
             val intent = Intent(context, MainActivity::class.java)
             val pendingIndent = PendingIntent.getActivity(context, 0, intent, 0)
-            remoteViews.setOnClickPendingIntent(R.id.appwidget_text, pendingIndent)
+            remoteViews.setOnClickPendingIntent(R.id.container, pendingIndent)
         }
 
         // Instruct the widget manager to update the widget
